@@ -34,6 +34,11 @@ namespace Markdown
             return s;
         }
 
+        private string ManageScreening(string s)
+        {
+            throw new NotImplementedException();
+        }
+
         private string ManageCode(string s)
         {
             throw new NotImplementedException();
