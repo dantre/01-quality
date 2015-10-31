@@ -30,53 +30,34 @@ namespace Markdown
             var tokens = GetTokens(paragraph);
             return GetFormattedText(tokens);
         }
-
-        private string GetFormattedText(string[] tokens)
+        private string GetFormattedText(IEnumerable<string> tokens)
         {
             var stack = new Stack<string>();
 
             foreach (var token in tokens)
             {
-                if (token=="_" && stack.Contains("_"))
+                if (token=="_" && stack.Contains("_") && stack.Peek()!="\\")
                 {
-                    
-                    List<string> list = new List<string>();
-                    list.Add(token);
-                    while (stack.Peek() != token)
+                    var stackCopy = new Stack<string>(stack.Reverse());
+                    var list = ReverseStackToToken(ref stack, token);
+                    if (stack.Contains("`") || stack.Contains("__"))
                     {
-                        list.Add(stack.Pop());
+                        stack = stackCopy;
+                        stack.Push("_");
                     }
-                    list.Add(stack.Pop());
-                    list.Reverse();
-
-                    stack.Push(FormatHtmlEm(string.Join("", list)));
+                    else
+                        stack.Push(FormatHtmlEm(string.Join("", list)));
                     continue;
                 }
-                if (token == "__" && stack.Contains("__") && !stack.Contains("`"))
+                if (token == "__" && stack.Contains("__") && !stack.Contains("`") && stack.Peek() != "\\")
                 {
-                    List<string> list = new List<string>();
-                    list.Add(token);
-                    while (stack.Peek() != token)
-                    {
-                        list.Add(stack.Pop());
-                    }
-                    list.Add(stack.Pop());
-                    list.Reverse();
-
+                    var list = ReverseStackToToken(ref stack, token);
                     stack.Push(FormatHtmlStrong(string.Join("", list)));
                     continue;
                 }
-                if (token == "`" && stack.Contains("`"))
+                if (token == "`" && stack.Contains("`") && stack.Peek() != "\\")
                 {
-                    List<string> list = new List<string>();
-                    list.Add(token);
-                    while (stack.Peek() != token)
-                    {
-                        list.Add(stack.Pop());
-                    }
-                    list.Add(stack.Pop());
-                    list.Reverse();
-
+                    var list = ReverseStackToToken(ref stack, token);
                     stack.Push(FormatHtmlCode(string.Join("", list)));
                     continue;
                 }
@@ -84,17 +65,26 @@ namespace Markdown
             }
             return string.Join("", stack.Reverse());
         }
-
+        private List<string> ReverseStackToToken(ref Stack<string> stack, string token)
+        {
+            List<string> tokens = new List<string>();
+            tokens.Add(token);
+            while (stack.Peek() != token)
+            {
+                tokens.Add(stack.Pop());
+            }
+            tokens.Add(stack.Pop());
+            tokens.Reverse();
+            return tokens;
+        }
         private bool IsToken(string token)
         {
             return "__`".Contains(token);
         }
-
         private string FormatHtml(string result)
         {
             return result;
         }
-
         private string FormatHtmlEm(string text)
         {
             return Regex.Replace(text, "_(.*)_", "<em>$1</em>");
@@ -107,11 +97,9 @@ namespace Markdown
         {
             return Regex.Replace(text, "`(.*)`", "<code>$1</code>");
         }
-
-
-        public string[] GetTokens(string text)
+        public IEnumerable<string> GetTokens(string text)
         {
-            return Regex.Split(text, @"(__)|(_)|(\\)|(`)");
+            return Regex.Split(text, @"(__)|(_)|(\\)|(`)").Where(s => s!="");
         }
         public string[] GetParagraphs(string text)
         {

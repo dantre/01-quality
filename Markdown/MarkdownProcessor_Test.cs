@@ -101,6 +101,16 @@ namespace Markdown
 
             var result = processor.FixParagraph(data);
 
+            Assert.AreEqual(result, "<strong>A_B_C</strong>");
+        }
+        [Test]
+        public void InsideCode_ShouldNot_EmStrong()
+        {
+            var data = "`A_B__C__D_F`";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
             Assert.AreNotEqual(result, "<strong>A<em>B</em>C</strong>");
         }
         [Test]
