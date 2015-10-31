@@ -63,7 +63,6 @@ namespace Markdown
 
             Assert.AreEqual(result, "<em>A</em>");
         }
-
         [Test]
         public void DoubleGround_Should_Strong()
         {
@@ -73,6 +72,16 @@ namespace Markdown
             var result = processor.FixParagraph(data);
 
             Assert.AreEqual(result, "<strong>A</strong>");
+        }
+        [Test]
+        public void Backtick_Should_Code()
+        {
+            var data = "`A`";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual(result, "<code>A</code>");
         }
         [Test]
         public void Can_ScreeningGround()

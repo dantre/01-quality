@@ -34,7 +34,7 @@ namespace Markdown
             var paragraphs = GetParagraphs(RawText);
             foreach (var p in paragraphs)
             {
-                html += $"<p>{FixParagraph(p)}</p>";
+                html += $"<p>{FixParagraph(p)}</p>\r\n";
             }
             return html;
         }
@@ -85,6 +85,16 @@ namespace Markdown
                             {
                                 stack.Pop();
                                 result += $"<strong>{bufferText}</strong>";
+                                bufferText = "";
+                                bufferRaw = "";
+                                continue;
+                            }
+                            break;
+                        case "`":
+                            if (stack.Peek() == State.Backtick)
+                            {
+                                stack.Pop();
+                                result += $"<code>{bufferText}</code>";
                                 bufferText = "";
                                 bufferRaw = "";
                                 continue;
