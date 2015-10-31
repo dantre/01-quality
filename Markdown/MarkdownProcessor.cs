@@ -9,32 +9,29 @@ namespace Markdown
 {
     internal class MarkdownProcessor
     {
-        public string Filename { get; private set; }
-        public MarkdownProcessor(string filename)
+        private string RawText { get; set; }
+        public MarkdownProcessor(string text)
         {
-            Filename = filename;
+            RawText = text;
         }
         public string GetHtml()
         {
-            var data = File.ReadAllText("Example.txt");
-            var result = new StringBuilder();
-
-            var paragraphs = Regex.Split(data, @"\r\n\s*\r\n");
-            foreach (var paragraph in paragraphs)
+            var html = "";
+            var paragraphs = GetParagraphs();
+            foreach (var p in paragraphs)
             {
-                result.AppendLine($"<p>{Fix(paragraph)}</p>");
+                html += $"<p>{FixParagraph(p)}</p>";
             }
-            return result.ToString();
+            return html;
         }
-        private static string Fix(string paragraph)
+        private static string FixParagraph(string paragraph)
         {
             Stack<State> stack = new Stack<State>();
-            var mas = Regex.Split(paragraph, @"(__)|(_)|(\\)|(`)");
 
             var result = "";
             var buffer = "";
 
-
+            var mas = Regex.Split(paragraph, @"(__)|(_)|(\\)|(`)");
             foreach (var ma in mas)
             {
                 switch (ma)
@@ -55,6 +52,11 @@ namespace Markdown
                 result += $"###{ma}###";
             }
             return result;
+        }
+
+        public string[] GetParagraphs()
+        {
+            return Regex.Split(RawText, @"\r\n\s*\r\n");
         }
         private enum State
         {

@@ -17,7 +17,8 @@ namespace Markdown
             var filename = "Example.txt";
             if (File.Exists(filename))
             {
-                var processor = new MarkdownProcessor(filename);
+                var allText = File.ReadAllText(filename);
+                var processor = new MarkdownProcessor(allText);
                 var html = processor.GetHtml();
                 File.WriteAllText("result.html", html);
             }
