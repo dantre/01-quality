@@ -8,25 +8,10 @@ namespace Markdown
     internal class MarkdownProcessor
     {
         private string RawText { get; }
-        private Dictionary<string, State> StateDictionary { get; set; }
-        public MarkdownProcessor()
-        {
-            InitStateDictionary();
-        }
+        public MarkdownProcessor() {}
         public MarkdownProcessor(string text)
         {
             RawText = text;
-            InitStateDictionary();
-        }
-        private void InitStateDictionary()
-        {
-            StateDictionary = new Dictionary<string, State>
-            {
-                {"_", State.Ground},
-                {"__", State.DoubleGround},
-                {"`", State.Backtick},
-                {"\\", State.Slash}
-            };
         }
         public string GetHtml()
         {
@@ -40,79 +25,90 @@ namespace Markdown
         }
         public string FixParagraph(string paragraph)
         {
-            var stack = new Stack<State>();
-
-            var result = "";
-            var bufferText = "";
-            var bufferRaw = "";
-
-            paragraph = Regex.Replace(paragraph, "\\<", "&lt;");
-            paragraph = Regex.Replace(paragraph, "\\>", "&gt;");
-
+            paragraph = Regex.Replace(paragraph, "\\\\<", "&lt;");
+            paragraph = Regex.Replace(paragraph, "\\\\>", "&gt;");
             var tokens = GetTokens(paragraph);
-            string PossibleTokens = "__`";
+            return GetFormattedText(tokens);
+        }
 
-            foreach (var token in tokens.Where(t => t!=""))
+        private string GetFormattedText(string[] tokens)
+        {
+            var stack = new Stack<string>();
+
+            foreach (var token in tokens)
             {
-                bufferRaw += token;
-                if (PossibleTokens.Contains(token))
+                if (token=="_" && stack.Contains("_"))
                 {
-                    if (stack.Count == 0)
+                    
+                    List<string> list = new List<string>();
+                    list.Add(token);
+                    while (stack.Peek() != token)
                     {
-                        stack.Push(StateDictionary[token]);
-                        continue;
+                        list.Add(stack.Pop());
                     }
-                    if (stack.Peek() == State.Slash)
-                    {
-                        stack.Pop();
-                        bufferText += token;
-                        continue;
-                    }
-                    switch (token)
-                    {
-                        case "_":
-                            if (stack.Peek() == State.Ground)
-                            {
-                                stack.Pop();
-                                result += $"<em>{bufferText}</em>";
-                                bufferText = "";
-                                bufferRaw = "";
-                                continue;
-                            }
-                            break;
-                        case "__":
-                            if (stack.Peek() == State.DoubleGround)
-                            {
-                                stack.Pop();
-                                result += $"<strong>{bufferText}</strong>";
-                                bufferText = "";
-                                bufferRaw = "";
-                                continue;
-                            }
-                            break;
-                        case "`":
-                            if (stack.Peek() == State.Backtick)
-                            {
-                                stack.Pop();
-                                result += $"<code>{bufferText}</code>";
-                                bufferText = "";
-                                bufferRaw = "";
-                                continue;
-                            }
-                            break;
-                    }
-                }
-                if (token == "\\")
-                {
-                    stack.Push(State.Slash);
+                    list.Add(stack.Pop());
+                    list.Reverse();
+
+                    stack.Push(FormatHtmlEm(string.Join("", list)));
                     continue;
                 }
+                if (token == "__" && stack.Contains("__") && !stack.Contains("`"))
+                {
+                    List<string> list = new List<string>();
+                    list.Add(token);
+                    while (stack.Peek() != token)
+                    {
+                        list.Add(stack.Pop());
+                    }
+                    list.Add(stack.Pop());
+                    list.Reverse();
 
-                bufferText += token;
+                    stack.Push(FormatHtmlStrong(string.Join("", list)));
+                    continue;
+                }
+                if (token == "`" && stack.Contains("`"))
+                {
+                    List<string> list = new List<string>();
+                    list.Add(token);
+                    while (stack.Peek() != token)
+                    {
+                        list.Add(stack.Pop());
+                    }
+                    list.Add(stack.Pop());
+                    list.Reverse();
+
+                    stack.Push(FormatHtmlCode(string.Join("", list)));
+                    continue;
+                }
+                stack.Push(token);
             }
-            result += bufferText;
+            return string.Join("", stack.Reverse());
+        }
+
+        private bool IsToken(string token)
+        {
+            return "__`".Contains(token);
+        }
+
+        private string FormatHtml(string result)
+        {
             return result;
         }
+
+        private string FormatHtmlEm(string text)
+        {
+            return Regex.Replace(text, "_(.*)_", "<em>$1</em>");
+        }
+        private string FormatHtmlStrong(string text)
+        {
+            return Regex.Replace(text, "__(.*)__", "<strong>$1</strong>");
+        }
+        private string FormatHtmlCode(string text)
+        {
+            return Regex.Replace(text, "`(.*)`", "<code>$1</code>");
+        }
+
+
         public string[] GetTokens(string text)
         {
             return Regex.Split(text, @"(__)|(_)|(\\)|(`)");
@@ -120,10 +116,6 @@ namespace Markdown
         public string[] GetParagraphs(string text)
         {
             return Regex.Split(text, @"\r\n\s*\r\n");
-        }
-        private enum State
-        {
-            Ground, DoubleGround, Backtick, Slash
         }
     }
 }

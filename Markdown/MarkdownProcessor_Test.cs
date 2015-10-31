@@ -84,6 +84,26 @@ namespace Markdown
             Assert.AreEqual(result, "<code>A</code>");
         }
         [Test]
+        public void StrongInsideEm_Should()
+        {
+            var data = "_A__B__C_";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual(result, "<em>A<strong>B</strong>C</em>");
+        }
+        [Test]
+        public void EmInsideStrong_ShouldNot()
+        {
+            var data = "__A_B_C__";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreNotEqual(result, "<strong>A<em>B</em>C</strong>");
+        }
+        [Test]
         public void Can_ScreeningGround()
         {
             var data = "\\_A\\_";
