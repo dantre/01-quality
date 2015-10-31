@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Design;
-using System.IO;
-using System.Linq;
-using System.Runtime.CompilerServices;
+﻿using System.IO;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Markdown
 {
-    class Program
+    static class Program
     {
         static void Main(string[] args)
         {
@@ -20,7 +13,7 @@ namespace Markdown
                 var allText = File.ReadAllText(filename);
                 var processor = new MarkdownProcessor(allText);
                 var html = processor.GetHtml();
-                File.WriteAllText("result.html", html);
+                File.WriteAllText("result.html", html, Encoding.UTF8);
             }
         }
     }

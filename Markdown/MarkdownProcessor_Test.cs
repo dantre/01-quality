@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using NUnit.Framework;
+// ReSharper disable All
 
 namespace Markdown
 {
@@ -20,7 +16,6 @@ namespace Markdown
 
             Assert.AreEqual(result.Length, 2);
         }
-
         [Test]
         public void TwoEnters_Should_TakeRightParagraphs()
         {
@@ -32,7 +27,6 @@ namespace Markdown
             Assert.AreEqual(result[0], "A");
             Assert.AreEqual(result[1], "B");
         }
-
         [Test]
         public void OneEnter_ShouldNot_NewParagraph()
         {
@@ -53,6 +47,62 @@ namespace Markdown
             var result = processor.GetTokens(data);
 
             CollectionAssert.AreEqual(result, expectedResult);
+        }
+    }
+
+    [TestFixture]
+    class MarkdownProcessor_FixParagraph_Test
+    {
+        [Test]
+        public void Ground_Should_Em()
+        {
+            var data = "_A_";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual(result, "<em>A</em>");
+        }
+
+        [Test]
+        public void DoubleGround_Should_Strong()
+        {
+            var data = "__A__";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual(result, "<strong>A</strong>");
+        }
+        [Test]
+        public void Can_ScreeningGround()
+        {
+            var data = "\\_A\\_";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual(result, "_A_");
+        }
+        [Test]
+        public void Can_ScreeningDoubleGround()
+        {
+            var data = "\\_\\_A\\_\\_";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual(result, "__A__");
+        }
+        [Test]
+        public void Can_ScreeningBacktickGround()
+        {
+            var data = "\\`A\\`";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual(result, "`A`");
         }
     }
 }

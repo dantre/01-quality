@@ -1,9 +1,6 @@
-using System;
-using System.Collections;
+using System.CodeDom;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Markdown
@@ -41,33 +38,70 @@ namespace Markdown
             }
             return html;
         }
-        private string FixParagraph(string paragraph)
+        public string FixParagraph(string paragraph)
         {
             var stack = new Stack<State>();
 
             var result = "";
-            var buffer = "";
+            var bufferText = "";
+            var bufferRaw = "";
+
+            paragraph = Regex.Replace(paragraph, "\\<", "&lt;");
+            paragraph = Regex.Replace(paragraph, "\\>", "&gt;");
 
             var tokens = GetTokens(paragraph);
-            string PossibleTokens = "__`\\";
-            foreach (var token in tokens)
+            string PossibleTokens = "__`";
+
+            foreach (var token in tokens.Where(t => t!=""))
             {
+                bufferRaw += token;
                 if (PossibleTokens.Contains(token))
                 {
-                    CheckTokens(stack, token);
+                    if (stack.Count == 0)
+                    {
+                        stack.Push(StateDictionary[token]);
+                        continue;
+                    }
+                    if (stack.Peek() == State.Slash)
+                    {
+                        stack.Pop();
+                        bufferText += token;
+                        continue;
+                    }
+                    switch (token)
+                    {
+                        case "_":
+                            if (stack.Peek() == State.Ground)
+                            {
+                                stack.Pop();
+                                result += $"<em>{bufferText}</em>";
+                                bufferText = "";
+                                bufferRaw = "";
+                                continue;
+                            }
+                            break;
+                        case "__":
+                            if (stack.Peek() == State.DoubleGround)
+                            {
+                                stack.Pop();
+                                result += $"<strong>{bufferText}</strong>";
+                                bufferText = "";
+                                bufferRaw = "";
+                                continue;
+                            }
+                            break;
+                    }
                 }
-                else
+                if (token == "\\")
                 {
-                    buffer += token;
+                    stack.Push(State.Slash);
+                    continue;
                 }
+
+                bufferText += token;
             }
+            result += bufferText;
             return result;
-        }
-        private void CheckTokens(Stack<State> stack, string token)
-        {
-            if (stack.Count == 0)
-                stack.Push(StateDictionary[token]);
-           
         }
         public string[] GetTokens(string text)
         {
