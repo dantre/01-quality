@@ -29,7 +29,7 @@ namespace Markdown
             paragraph = Regex.Replace(paragraph, "\\\\<", "&lt;");
             paragraph = Regex.Replace(paragraph, "\\\\>", "&gt;");
             var tokens = GetTokens(paragraph);
-            return GetFormattedText(tokens);
+            return RemoveSlashes(GetFormattedText(tokens));
         }
         private string GetFormattedText(IEnumerable<string> tokens)
         {
@@ -92,6 +92,14 @@ namespace Markdown
         private string FormatHtmlCode(string text)
         {
             return Regex.Replace(text, "`(.*)`", "<code>$1</code>");
+        }
+
+        private string RemoveSlashes(string text)
+        {
+            text = Regex.Replace(text, @"\\_", "_");
+            text = Regex.Replace(text, @"\\__", "__");
+            text = Regex.Replace(text, @"\\`", "`");
+            return text;
         }
         public IEnumerable<string> GetTokens(string text)
         {
