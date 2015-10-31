@@ -10,11 +10,26 @@ namespace Markdown
 {
     internal class MarkdownProcessor
     {
-        private string RawText { get; set; }
-        public MarkdownProcessor(){}
+        private string RawText { get; }
+        private Dictionary<string, State> StateDictionary { get; set; }
+        public MarkdownProcessor()
+        {
+            InitStateDictionary();
+        }
         public MarkdownProcessor(string text)
         {
             RawText = text;
+            InitStateDictionary();
+        }
+        private void InitStateDictionary()
+        {
+            StateDictionary = new Dictionary<string, State>
+            {
+                {"_", State.Ground},
+                {"__", State.DoubleGround},
+                {"`", State.Backtick},
+                {"\\", State.Slash}
+            };
         }
         public string GetHtml()
         {
@@ -26,40 +41,39 @@ namespace Markdown
             }
             return html;
         }
-        private static string FixParagraph(string paragraph)
+        private string FixParagraph(string paragraph)
         {
-            Stack<State> stack = new Stack<State>();
+            var stack = new Stack<State>();
 
             var result = "";
             var buffer = "";
 
             var tokens = GetTokens(paragraph);
-            foreach (var ma in tokens)
+            string PossibleTokens = "__`\\";
+            foreach (var token in tokens)
             {
-                switch (ma)
+                if (PossibleTokens.Contains(token))
                 {
-                    case "_":
-                        stack.Push(State.Ground);
-                        break;
-                    case "__":
-                        stack.Push(State.DoubleGround);
-                        break;
-                    case "`":
-                        stack.Push(State.Backtick);
-                        break;
-                    case "\\":
-                        stack.Push(State.Slash);
-                        break;
+                    CheckTokens(stack, token);
                 }
-                result += $"###{ma}###";
+                else
+                {
+                    buffer += token;
+                }
             }
             return result;
         }
-        public static string[] GetTokens(string text)
+        private void CheckTokens(Stack<State> stack, string token)
+        {
+            if (stack.Count == 0)
+                stack.Push(StateDictionary[token]);
+           
+        }
+        public string[] GetTokens(string text)
         {
             return Regex.Split(text, @"(__)|(_)|(\\)|(`)");
         }
-        public static string[] GetParagraphs(string text)
+        public string[] GetParagraphs(string text)
         {
             return Regex.Split(text, @"\r\n\s*\r\n");
         }

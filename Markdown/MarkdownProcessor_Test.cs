@@ -8,14 +8,15 @@ using NUnit.Framework;
 namespace Markdown
 {
     [TestFixture]
-    internal class MarkdownProcessor_Test
+    class MarkdownProcessor_Test
     {
         [Test]
         public void TwoEntersWithSpaces_Should_TwoParagraphs()
         {
-            string data = "asd\r\n    \r\nasd";
+            string data = "A\r\n    \r\nB";
+            var processor = new MarkdownProcessor();
 
-            var result = MarkdownProcessor.GetParagraphs(data);
+            var result = processor.GetParagraphs(data);
 
             Assert.AreEqual(result.Length, 2);
         }
@@ -23,20 +24,22 @@ namespace Markdown
         [Test]
         public void TwoEnters_Should_TakeRightParagraphs()
         {
-            string data = "asd\r\n    \r\n asd";
+            string data = "A\r\n    \r\nB";
+            var processor = new MarkdownProcessor();
 
-            var result = MarkdownProcessor.GetParagraphs(data);
+            var result = processor.GetParagraphs(data);
 
-            Assert.AreEqual(result[0], "asd");
-            Assert.AreEqual(result[1], " asd");
+            Assert.AreEqual(result[0], "A");
+            Assert.AreEqual(result[1], "B");
         }
 
         [Test]
         public void OneEnter_ShouldNot_NewParagraph()
         {
-            string data = "asd\r\n asd";
+            string data = "A\r\n B";
+            var processor = new MarkdownProcessor();
 
-            var result = MarkdownProcessor.GetParagraphs(data);
+            var result = processor.GetParagraphs(data);
 
             Assert.AreEqual(result.Length, 1);
         }
@@ -44,10 +47,11 @@ namespace Markdown
         public void TokenString_Should_ParseRight()
         {
             var data = "a_b__c\\d`e";
+            var expectedResult = new string[] { "a", "_", "b", "__", "c", "\\", "d", "`", "e" };
+            var processor = new MarkdownProcessor();
+            
+            var result = processor.GetTokens(data);
 
-            var result = MarkdownProcessor.GetTokens(data);
-
-            var expectedResult = new string[] {"a", "_", "b", "__", "c", "\\", "d", "`","e"};
             CollectionAssert.AreEqual(result, expectedResult);
         }
     }
