@@ -1,62 +1,64 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Markdown
 {
     internal class MarkdownProcessor
     {
-        public string FileName { get; private set; }
-        public MarkdownProcessor(string s)
+        public string Filename { get; private set; }
+        public MarkdownProcessor(string filename)
         {
-            FileName = s;
-            
+            Filename = filename;
         }
-
         public string GetHtml()
         {
-            var allText = File.ReadAllText(FileName);
-            var paragraphs = GetParagraphs(allText);
-            return String.Join("", paragraphs.Select(p => ManageParagraph(p)));
-        }
+            var data = File.ReadAllText("Example.txt");
+            var result = new StringBuilder();
 
-        private string ManageParagraph(string p)
-        {
-            return String.Format("<p>{0}</p>", PrepareParagraph(p));
+            var paragraphs = Regex.Split(data, @"\r\n\s*\r\n");
+            foreach (var paragraph in paragraphs)
+            {
+                result.AppendLine($"<p>{Fix(paragraph)}</p>");
+            }
+            return result.ToString();
         }
-
-        private string PrepareParagraph(string s)
+        private static string Fix(string paragraph)
         {
-            s = ManageScreening(s);
-            s = ManageEm(s);
-            s = ManageStrong(s);
-            s = ManageCode(s);
-            return s;
+            Stack<State> stack = new Stack<State>();
+            var mas = Regex.Split(paragraph, @"(__)|(_)|(\\)|(`)");
+
+            var result = "";
+            var buffer = "";
+
+
+            foreach (var ma in mas)
+            {
+                switch (ma)
+                {
+                    case "_":
+                        stack.Push(State.Ground);
+                        break;
+                    case "__":
+                        stack.Push(State.DoubleGround);
+                        break;
+                    case "`":
+                        stack.Push(State.Backtick);
+                        break;
+                    case "\\":
+                        stack.Push(State.Slash);
+                        break;
+                }
+                result += $"###{ma}###";
+            }
+            return result;
         }
-
-        private string ManageScreening(string s)
+        private enum State
         {
-            throw new NotImplementedException();
-        }
-
-        private string ManageCode(string s)
-        {
-            throw new NotImplementedException();
-        }
-
-        private string ManageStrong(string s)
-        {
-            throw new NotImplementedException();
-        }
-
-        private string ManageEm(string s)
-        {
-            throw new NotImplementedException();
-        }
-
-        private string[] GetParagraphs(string allText)
-        {
-            throw new NotImplementedException();
+            Ground, DoubleGround, Backtick, Slash
         }
     }
 }
