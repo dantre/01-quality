@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -10,6 +11,7 @@ namespace Markdown
     internal class MarkdownProcessor
     {
         private string RawText { get; set; }
+        public MarkdownProcessor(){}
         public MarkdownProcessor(string text)
         {
             RawText = text;
@@ -17,7 +19,7 @@ namespace Markdown
         public string GetHtml()
         {
             var html = "";
-            var paragraphs = GetParagraphs();
+            var paragraphs = GetParagraphs(RawText);
             foreach (var p in paragraphs)
             {
                 html += $"<p>{FixParagraph(p)}</p>";
@@ -31,8 +33,8 @@ namespace Markdown
             var result = "";
             var buffer = "";
 
-            var mas = Regex.Split(paragraph, @"(__)|(_)|(\\)|(`)");
-            foreach (var ma in mas)
+            var tokens = GetTokens(paragraph);
+            foreach (var ma in tokens)
             {
                 switch (ma)
                 {
@@ -53,10 +55,13 @@ namespace Markdown
             }
             return result;
         }
-
-        public string[] GetParagraphs()
+        public static string[] GetTokens(string text)
         {
-            return Regex.Split(RawText, @"\r\n\s*\r\n");
+            return Regex.Split(text, @"(__)|(_)|(\\)|(`)");
+        }
+        public static string[] GetParagraphs(string text)
+        {
+            return Regex.Split(text, @"\r\n\s*\r\n");
         }
         private enum State
         {
