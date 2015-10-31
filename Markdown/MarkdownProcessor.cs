@@ -1,3 +1,4 @@
+using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace Markdown
 {
-    internal class MarkdownProcessor
+    class MarkdownProcessor
     {
         private string RawText { get; }
         public MarkdownProcessor() {}
@@ -77,16 +78,11 @@ namespace Markdown
             tokens.Reverse();
             return tokens;
         }
-        private bool IsToken(string token)
-        {
-            return "__`".Contains(token);
-        }
-        private string FormatHtml(string result)
-        {
-            return result;
-        }
         private string FormatHtmlEm(string text)
         {
+            var data = Regex.Match(text, "_(.*)_");
+            if (data.Groups[1].Value.ToCharArray().All(d => Char.IsDigit(d)))
+                return text;
             return Regex.Replace(text, "_(.*)_", "<em>$1</em>");
         }
         private string FormatHtmlStrong(string text)

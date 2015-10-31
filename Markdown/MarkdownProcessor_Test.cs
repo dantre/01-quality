@@ -111,7 +111,17 @@ namespace Markdown
 
             var result = processor.FixParagraph(data);
 
-            Assert.AreNotEqual(result, "<strong>A<em>B</em>C</strong>");
+            Assert.AreEqual(result, "<code>A_B__C__D_F</code>");
+        }
+        [Test]
+        public void Digits_ShouldNot_InsideEm()
+        {
+            var data = "_1_ _222_";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual(result, "_1_ _222_");
         }
         [Test]
         public void Can_ScreeningGround()
