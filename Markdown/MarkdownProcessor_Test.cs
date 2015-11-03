@@ -155,7 +155,7 @@ namespace Markdown
         }
 
         [Test]
-        public void NotClosedCodeTag()
+        public void NotClosedCodeTag_Em()
         {
             var data = "A`B_C_";
             var processor = new MarkdownProcessor();
@@ -163,6 +163,16 @@ namespace Markdown
             var result = processor.FixParagraph(data);
 
             Assert.AreEqual("A`B<em>C</em>", result);
+        }
+        [Test]
+        public void NotClosedCodeTag_Em_Strong()
+        {
+            var data = "A`B_C_D__E__F";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual("A`B<em>C</em>D<strong>E</strong>F", result);
         }
     }
 }
