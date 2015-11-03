@@ -7,6 +7,7 @@ namespace Markdown
     {
         static void Main(string[] args)
         {
+            // CR (krait): Для удобства имя файла стоит принимать через аргументы.
             var filename = "Example.txt";
             if (File.Exists(filename))
             {
