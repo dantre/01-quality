@@ -64,8 +64,18 @@ namespace Markdown
                 }
                 stack.Push(token);
             }
-            return string.Join("", stack.Reverse());
+            
+            return CheckNotClosedTags(string.Join("", stack.Reverse()));
         }
+
+        private string CheckNotClosedTags(string text)
+        {
+            text = Regex.Replace(text, "_(.*)_", "<em>$1</em>");
+            text = Regex.Replace(text, "__(.*)__", "<strong>$1</strong>");
+            text = Regex.Replace(text, "`(.*)`", "<code>$1</code>");
+            return text;
+        }
+
         private List<string> ReverseStackToToken(ref Stack<string> stack, string token)
         {
             List<string> tokens = new List<string>();
@@ -93,7 +103,6 @@ namespace Markdown
         {
             return Regex.Replace(text, "`(.*)`", "<code>$1</code>");
         }
-
         private string RemoveSlashes(string text)
         {
             text = Regex.Replace(text, @"\\_", "_");

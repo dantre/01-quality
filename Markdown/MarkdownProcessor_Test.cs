@@ -153,5 +153,16 @@ namespace Markdown
 
             Assert.AreEqual(result, "`A`");
         }
+
+        [Test]
+        public void NotClosedCodeTag()
+        {
+            var data = "A`B_C_";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual("A`B<em>C</em>", result);
+        }
     }
 }
