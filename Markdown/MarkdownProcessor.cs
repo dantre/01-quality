@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Markdown
@@ -8,7 +9,7 @@ namespace Markdown
     // CR (krait): «десь есть некоторое количество багов, суд€ по тому, что даже на примере разметка получаетс€ неправильна€.
     // CR (krait): Ќужно пофиксить баги и написать недостающие тесты, которые бы их вы€вили.
 
-    class MarkdownProcessor
+    public class MarkdownProcessor
     {
         private string RawText { get; }
 
@@ -21,20 +22,16 @@ namespace Markdown
 
         public string GetHtml()
         {
-            var html = "";
             var paragraphs = GetParagraphs(RawText);
+            var html = new StringBuilder();
             foreach (var p in paragraphs)
-            {
-                // CR (krait): ƒл€ этого лучше использовать класс StringBuilder. ќн работает значительно быстрее.
-                html += $"<p>{FixParagraph(p)}</p>\r\n";
-            }
-            return html;
+                html.AppendLine($"<p>{FixParagraph(p)}</p>\r\n");
+            return html.ToString();
         }
 
         public string FixParagraph(string paragraph)
         {
-            paragraph = Regex.Replace(paragraph, "\\\\<", "&lt;");
-            paragraph = Regex.Replace(paragraph, "\\\\>", "&gt;");
+            paragraph = HtmlFormatter.FormatGreaterLesserHtml(paragraph);
             var tokens = GetTokens(paragraph);
             return RemoveSlashes(GetFormattedText(tokens));
         }
@@ -55,65 +52,36 @@ namespace Markdown
                         stack.Push("_");
                     }
                     else
-                        stack.Push(FormatHtmlEm(string.Join("", list)));
+                        stack.Push(HtmlFormatter.FormatHtmlEm(string.Join("", list)));
                     continue;
                 }
                 if (token == "__" && stack.Contains("__") && !stack.Contains("`") && stack.Peek() != "\\")
                 {
                     var list = ReverseStackToToken(ref stack, token);
-                    stack.Push(FormatHtmlStrong(string.Join("", list)));
+                    stack.Push(HtmlFormatter.FormatHtmlStrong(string.Join("", list)));
                     continue;
                 }
                 if (token == "`" && stack.Contains("`") && stack.Peek() != "\\")
                 {
                     var list = ReverseStackToToken(ref stack, token);
-                    stack.Push(FormatHtmlCode(string.Join("", list)));
+                    stack.Push(HtmlFormatter.FormatHtmlCode(string.Join("", list)));
                     continue;
                 }
                 stack.Push(token);
             }
 
-            return CheckNotClosedTags(string.Join("", stack.Reverse()));
-        }
-
-        private string CheckNotClosedTags(string text)
-        {
-            text = Regex.Replace(text, "__(.*)__", "<strong>$1</strong>");
-            text = Regex.Replace(text, "_(.*)_", "<em>$1</em>");
-            return text;
+            return string.Join("", stack.Reverse());
         }
 
         private List<string> ReverseStackToToken(ref Stack<string> stack, string token)
         {
             var tokens = new List<string> { token };
-
             while (stack.Peek() != token)
-            {
                 tokens.Add(stack.Pop());
-            }
 
             tokens.Add(stack.Pop());
             tokens.Reverse();
-
             return tokens;
-        }
-
-        private string FormatHtmlEm(string text)
-        {
-            var data = Regex.Match(text, "_(.*)_");
-            if (data.Groups[1].Value.ToCharArray().All(d => Char.IsDigit(d)))
-                return text;
-            return Regex.Replace(text, "_(.*)_", "<em>$1</em>");
-        }
-
-        private string FormatHtmlStrong(string text)
-        {
-            return Regex.Replace(text, "__(.*)__", "<strong>$1</strong>");
-        }
-
-        private string FormatHtmlCode(string text)
-        {
-            return Regex.Replace(text, "`(.*)`", "<code>$1</code>");
         }
 
         private string RemoveSlashes(string text)

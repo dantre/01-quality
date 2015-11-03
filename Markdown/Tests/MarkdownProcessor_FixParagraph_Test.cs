@@ -1,64 +1,8 @@
-﻿using NUnit.Framework;
+using NUnit.Framework;
+// ReSharper disable All
 
 namespace Markdown
 {
-    // CR (krait): 1. Разные TestFixture должны быть в разных файлах.
-    // CR (krait): 2. Не хватает многих тестов. Несколько идей:
-    // CR (krait):     - проверить, что пустые параграфы пропускаются
-    // CR (krait):     - проверить замену "<" -> "&lt;"
-    // CR (krait):     - проверить, что внутри тега code другое форматирование не применяется
-    // CR (krait):     - проверить, что непарные _ и __ становятся обычным текстом
-    // CR (krait):     - проверить, что _ и __ остаются сами собой в тексте с цифрами
-    // CR (krait): 3. Названия тестов можно сделать более понятными. Стоит хотя бы пофиксить грамматику: OneEnter_ShouldNot_NewParagraph -> OneEnter_ShouldNot_ProduceNewParagraph.
-    // CR (krait):    Не должно быть названий вида StrongInsideEm_Should.
-
-    [TestFixture]
-    class MarkdownProcessor_Test
-    {
-        [Test]
-        public void TwoEntersWithSpaces_Should_TwoParagraphs()
-        {
-            string data = "A\r\n    \r\nB";
-            var processor = new MarkdownProcessor();
-
-            var result = processor.GetParagraphs(data);
-
-            Assert.AreEqual(result.Length, 2);
-        }
-        [Test]
-        public void TwoEnters_Should_TakeRightParagraphs()
-        {
-            string data = "A\r\n    \r\nB";
-            var processor = new MarkdownProcessor();
-
-            var result = processor.GetParagraphs(data);
-
-            Assert.AreEqual(result[0], "A");
-            Assert.AreEqual(result[1], "B");
-        }
-        [Test]
-        public void OneEnter_ShouldNot_NewParagraph()
-        {
-            string data = "A\r\n B";
-            var processor = new MarkdownProcessor();
-
-            var result = processor.GetParagraphs(data);
-
-            Assert.AreEqual(result.Length, 1);
-        }
-        [Test]
-        public void TokenString_Should_ParseRight()
-        {
-            var data = "a_b__c\\d`e";
-            var expectedResult = new[] { "a", "_", "b", "__", "c", "\\", "d", "`", "e" };
-            var processor = new MarkdownProcessor();
-            
-            var result = processor.GetTokens(data);
-
-            CollectionAssert.AreEqual(result, expectedResult);
-        }
-    }
-
     [TestFixture]
     class MarkdownProcessor_FixParagraph_Test
     {
@@ -72,6 +16,7 @@ namespace Markdown
 
             Assert.AreEqual(result, "<em>A</em>");
         }
+
         [Test]
         public void DoubleGround_Should_Strong()
         {
@@ -82,6 +27,7 @@ namespace Markdown
 
             Assert.AreEqual(result, "<strong>A</strong>");
         }
+
         [Test]
         public void Backtick_Should_Code()
         {
@@ -92,6 +38,7 @@ namespace Markdown
 
             Assert.AreEqual(result, "<code>A</code>");
         }
+
         [Test]
         public void StrongInsideEm_Should()
         {
@@ -102,6 +49,7 @@ namespace Markdown
 
             Assert.AreEqual(result, "<em>A<strong>B</strong>C</em>");
         }
+
         [Test]
         public void EmInsideStrong_ShouldNot()
         {
@@ -112,6 +60,7 @@ namespace Markdown
 
             Assert.AreEqual(result, "<strong>A_B_C</strong>");
         }
+
         [Test]
         public void InsideCode_ShouldNot_EmStrong()
         {
@@ -122,6 +71,7 @@ namespace Markdown
 
             Assert.AreEqual(result, "<code>A_B__C__D_F</code>");
         }
+
         [Test]
         public void Digits_ShouldNot_InsideEm()
         {
@@ -132,6 +82,7 @@ namespace Markdown
 
             Assert.AreEqual(result, "_1_ _222_");
         }
+
         [Test]
         public void Can_ScreeningGround()
         {
@@ -142,6 +93,7 @@ namespace Markdown
 
             Assert.AreEqual(result, "_A_");
         }
+
         [Test]
         public void Can_ScreeningDoubleGround()
         {
@@ -152,6 +104,7 @@ namespace Markdown
 
             Assert.AreEqual(result, "__A__");
         }
+
         [Test]
         public void Can_ScreeningBacktickGround()
         {
@@ -173,6 +126,7 @@ namespace Markdown
 
             Assert.AreEqual("A`B<em>C</em>", result);
         }
+
         [Test]
         public void NotClosedCodeTag_Em_Strong()
         {
@@ -183,6 +137,5 @@ namespace Markdown
 
             Assert.AreEqual("A`B<em>C</em>D<strong>E</strong>F", result);
         }
-        
     }
 }

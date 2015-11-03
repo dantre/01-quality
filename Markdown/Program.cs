@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 namespace Markdown
@@ -7,15 +8,15 @@ namespace Markdown
     {
         static void Main(string[] args)
         {
-            // CR (krait): Для удобства имя файла стоит принимать через аргументы.
-            var filename = "Example.txt";
-            if (File.Exists(filename))
+            if (File.Exists(args[0]))
             {
-                var allText = File.ReadAllText(filename);
+                var allText = File.ReadAllText(args[0]);
                 var processor = new MarkdownProcessor(allText);
                 var html = processor.GetHtml();
                 File.WriteAllText("result.html", html, Encoding.UTF8);
             }
+            else
+                Console.WriteLine("File not found.");
         }
     }
 }
