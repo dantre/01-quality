@@ -174,5 +174,6 @@ namespace Markdown
 
             Assert.AreEqual("A`B<em>C</em>D<strong>E</strong>F", result);
         }
+        
     }
 }

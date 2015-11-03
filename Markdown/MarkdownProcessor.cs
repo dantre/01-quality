@@ -72,7 +72,6 @@ namespace Markdown
         {
             text = Regex.Replace(text, "__(.*)__", "<strong>$1</strong>");
             text = Regex.Replace(text, "_(.*)_", "<em>$1</em>");
-            text = Regex.Replace(text, "`(.*)`", "<code>$1</code>");
             return text;
         }
 
