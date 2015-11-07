@@ -85,6 +85,10 @@ namespace Markdown
                 || (IsFormattedToken(token) && !stack.Contains(token));
         }
 
+        private bool IsFormattedToken(string token)
+        {
+            return Regex.IsMatch(token, "_|__|`");
+        }
 
         private List<string> ReverseStackToToken(ref Stack<string> stack, string token)
         {
@@ -97,7 +101,7 @@ namespace Markdown
             return tokens;
         }
 
-        private static string RemoveSlashes(string text)
+        private string RemoveSlashes(string text)
         {
             text = Regex.Replace(text, @"\\_", "_");
             text = Regex.Replace(text, @"\\__", "__");
@@ -113,11 +117,6 @@ namespace Markdown
         public string[] GetParagraphs(string text)
         {
             return Regex.Split(text, @"\r\n\s*\r\n");
-        }
-
-        private bool IsFormattedToken(string token)
-        {
-            return Regex.IsMatch(token, "_|__|`");
         }
     }
 }
