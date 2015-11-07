@@ -11,14 +11,15 @@ namespace Markdown
     {
         public static string FormatHtmlEm(string text)
         {
-            var data = Regex.Match(text, "_(.*)_");
-            if (data.Groups[1].Value.ToCharArray().All(d => Char.IsDigit(d)))
+            if (IsOnlyDigitsBetweenTokens(text, "_"))
                 return text;
             return Regex.Replace(text, "_(.*)_", "<em>$1</em>");
         }
 
         public static string FormatHtmlStrong(string text)
         {
+            if (IsOnlyDigitsBetweenTokens(text, "__"))
+                return text;
             return Regex.Replace(text, "__(.*)__", "<strong>$1</strong>");
         }
 
@@ -32,6 +33,13 @@ namespace Markdown
             text = Regex.Replace(text, "\\<", "&lt;");
             text = Regex.Replace(text, "\\>", "&gt;");
             return text;
+        }
+
+        public static bool IsOnlyDigitsBetweenTokens(string text, string token)
+        {
+            string regexp = $"{token}(.*){token}";
+            var data = Regex.Match(text, regexp);
+            return data.Groups[1].Value.ToCharArray().All(Char.IsDigit);
         }
     }
 }

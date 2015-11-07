@@ -84,6 +84,17 @@ namespace Markdown
         }
 
         [Test]
+        public void Digits_ShouldNot_InsideStrong()
+        {
+            var data = "__1__ __222__";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual(result, "__1__ __222__");
+        }
+
+        [Test]
         public void Can_ScreeningGround()
         {
             var data = "\\_A\\_";
