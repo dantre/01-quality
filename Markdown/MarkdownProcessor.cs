@@ -42,18 +42,7 @@ namespace Markdown
 
             foreach (var token in tokens)
             {
-                if ((stack.Count != 0 && stack.Peek() == "\\"))
-                {
-                    stack.Push(token);
-                    continue;
-                }
-                if (!IsFormattedToken(token) || (IsFormattedToken(token) && !stack.Contains(token)))
-                {
-                    stack.Push(token);
-                    continue;
-                }
-
-                if (token == "_")
+                if (token == "_" && stack.Contains("_") && stack.Peek() != "\\")
                 {
                     var stackCopy = new Stack<string>(stack.Reverse());
                     var list = ReverseStackToToken(ref stack, token);
@@ -66,30 +55,23 @@ namespace Markdown
                         stack.Push(HtmlFormatter.FormatHtmlEm(string.Join("", list)));
                     continue;
                 }
-                if (token == "__")
+                if (token == "__" && stack.Contains("__") && !stack.Contains("`") && stack.Peek() != "\\")
                 {
-                    var stackCopy = new Stack<string>(stack.Reverse());
                     var list = ReverseStackToToken(ref stack, token);
-                    if (stack.Contains("`"))
-                    {
-                        stack = stackCopy;
-                        stack.Push("__");
-                    }
-                    else
-                        stack.Push(HtmlFormatter.FormatHtmlStrong(string.Join("", list)));
+                    stack.Push(HtmlFormatter.FormatHtmlStrong(string.Join("", list)));
                     continue;
                 }
-                if (token == "`")
+                if (token == "`" && stack.Contains("`") && stack.Peek() != "\\")
                 {
                     var list = ReverseStackToToken(ref stack, token);
                     stack.Push(HtmlFormatter.FormatHtmlCode(string.Join("", list)));
                     continue;
                 }
+                stack.Push(token);
             }
 
             return string.Join("", stack.Reverse());
         }
-
 
         private List<string> ReverseStackToToken(ref Stack<string> stack, string token)
         {
@@ -102,7 +84,7 @@ namespace Markdown
             return tokens;
         }
 
-        private static string RemoveSlashes(string text)
+        private string RemoveSlashes(string text)
         {
             text = Regex.Replace(text, @"\\_", "_");
             text = Regex.Replace(text, @"\\__", "__");
@@ -118,11 +100,6 @@ namespace Markdown
         public string[] GetParagraphs(string text)
         {
             return Regex.Split(text, @"\r\n\s*\r\n");
-        }
-
-        private bool IsFormattedToken(string token)
-        {
-            return Regex.IsMatch(token, "_|__|`");
         }
     }
 }
