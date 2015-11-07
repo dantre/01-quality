@@ -29,8 +29,8 @@ namespace Markdown
 
         public static string FormatGreaterLesserHtml(string text)
         {
-            text = Regex.Replace(text, "\\<", "&lt;");
-            text = Regex.Replace(text, "\\>", "&gt;");
+            text = Regex.Replace(text, @"\\<", "&lt;");
+            text = Regex.Replace(text, @"\\>", "&gt;");
             return text;
         }
     }
