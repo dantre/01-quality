@@ -1,7 +1,7 @@
 using NUnit.Framework;
 // ReSharper disable All
 
-namespace Markdown
+namespace Markdown.Tests
 {
     [TestFixture]
     class MarkdownProcessor_FixParagraph_Test
@@ -48,17 +48,6 @@ namespace Markdown
             var result = processor.FixParagraph(data);
 
             Assert.AreEqual(result, "<em>A<strong>B</strong>C</em>");
-        }
-
-        [Test]
-        public void EmInsideStrong_ShouldNot()
-        {
-            var data = "__A_B_C__";
-            var processor = new MarkdownProcessor();
-
-            var result = processor.FixParagraph(data);
-
-            Assert.AreEqual(result, "<strong>A_B_C</strong>");
         }
 
         [Test]

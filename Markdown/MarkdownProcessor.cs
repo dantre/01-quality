@@ -31,7 +31,7 @@ namespace Markdown
 
         public string FixParagraph(string paragraph)
         {
-            paragraph = HtmlFormatter.FormatGreaterLesserHtml(paragraph);
+            paragraph = HtmlFormatter.FormatGreaterAndLesserHtml(paragraph);
             var tokens = GetTokens(paragraph);
             return RemoveSlashes(GetFormattedText(tokens));
         }
@@ -42,52 +42,47 @@ namespace Markdown
 
             foreach (var token in tokens)
             {
-                if ((stack.Count != 0 && stack.Peek() == "\\"))
+                if (JustPushToStack(stack, token))
                 {
                     stack.Push(token);
                     continue;
                 }
-                if (!IsFormattedToken(token) || (IsFormattedToken(token) && !stack.Contains(token)))
+                switch (token)
                 {
-                    stack.Push(token);
-                    continue;
-                }
-
-                if (token == "_")
-                {
-                    var stackCopy = new Stack<string>(stack.Reverse());
-                    var list = ReverseStackToToken(ref stack, token);
-                    if (stack.Contains("`") || stack.Contains("__"))
-                    {
-                        stack = stackCopy;
-                        stack.Push("_");
-                    }
-                    else
-                        stack.Push(HtmlFormatter.FormatHtmlEm(string.Join("", list)));
-                    continue;
-                }
-                if (token == "__")
-                {
-                    var stackCopy = new Stack<string>(stack.Reverse());
-                    var list = ReverseStackToToken(ref stack, token);
-                    if (stack.Contains("`"))
-                    {
-                        stack = stackCopy;
-                        stack.Push("__");
-                    }
-                    else
-                        stack.Push(HtmlFormatter.FormatHtmlStrong(string.Join("", list)));
-                    continue;
-                }
-                if (token == "`")
-                {
-                    var list = ReverseStackToToken(ref stack, token);
-                    stack.Push(HtmlFormatter.FormatHtmlCode(string.Join("", list)));
-                    continue;
+                    case "_":
+                        stack = StackProduceFormattedToken(stack, "_", HtmlFormatter.FormatHtmlEm);
+                        break;
+                    case "__":
+                        stack = StackProduceFormattedToken(stack, "__", HtmlFormatter.FormatHtmlStrong);
+                        break;
+                    case "`":
+                        var list = ReverseStackToToken(ref stack, token);
+                        stack.Push(HtmlFormatter.FormatHtmlCode(string.Join("", list)));
+                        break;
                 }
             }
-
             return string.Join("", stack.Reverse());
+        }
+
+        private Stack<string> StackProduceFormattedToken(Stack<string> stack, string token, Func<string,string> format)
+        {
+            var stackCopy = new Stack<string>(stack.Reverse());
+            var list = ReverseStackToToken(ref stack, token);
+            if (stack.Contains("`"))
+            {
+                stack = stackCopy;
+                stack.Push(token);
+            }
+            else
+                stack.Push(format(string.Join("", list)));
+            return stack;
+        }
+
+        private bool JustPushToStack(Stack<string> stack, string token)
+        {
+            return (stack.Count != 0 && stack.Peek() == "\\") 
+                || !IsFormattedToken(token) 
+                || (IsFormattedToken(token) && !stack.Contains(token));
         }
 
 

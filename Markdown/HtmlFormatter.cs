@@ -28,7 +28,7 @@ namespace Markdown
             return Regex.Replace(text, "`(.*)`", "<code>$1</code>");
         }
 
-        public static string FormatGreaterLesserHtml(string text)
+        public static string FormatGreaterAndLesserHtml(string text)
         {
             text = Regex.Replace(text, @"\\<", "&lt;");
             text = Regex.Replace(text, @"\\>", "&gt;");

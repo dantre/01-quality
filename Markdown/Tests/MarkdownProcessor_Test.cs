@@ -1,6 +1,6 @@
 ﻿using NUnit.Framework;
 
-namespace Markdown
+namespace Markdown.Tests
 {
     // CR (krait): 1. Разные TestFixture должны быть в разных файлах.
     // CR (krait): 2. Не хватает многих тестов. Несколько идей:
@@ -27,7 +27,7 @@ namespace Markdown
         }
 
         [Test]
-        public void TwoEnters_Should_TakeRightParagraphs()
+        public void TwoEnters_Should_TakeTwoParagraphs()
         {
             string data = "A\r\n    \r\nB";
             var processor = new MarkdownProcessor();
