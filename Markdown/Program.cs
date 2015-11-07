@@ -7,7 +7,7 @@ namespace Markdown
     static class Program
     {
         static void Main(string[] args)
-        {
+        {asdasd
             if (File.Exists(args[0]))
             {
                 var allText = File.ReadAllText(args[0]);
