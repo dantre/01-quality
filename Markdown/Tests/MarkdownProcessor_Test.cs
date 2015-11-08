@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Reflection.Emit;
-using System.Runtime.InteropServices;
 using NUnit.Framework;
 
 namespace Markdown.Tests

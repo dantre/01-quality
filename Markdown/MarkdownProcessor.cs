@@ -36,12 +36,14 @@ namespace Markdown
             return RemoveSlashes(GetFormattedText(tokens));
         }
 
-        private string GetFormattedText(IEnumerable<string> tokens)
+        private string GetFormattedText(IList<string> tokens)
         {
             var stack = new Stack<string>();
+            int tokenIndex = 0;
 
             foreach (var token in tokens)
             {
+                tokenIndex++;
                 if (JustPushToStack(stack, token))
                 {
                     stack.Push(token);
@@ -50,10 +52,16 @@ namespace Markdown
                 switch (token)
                 {
                     case "_":
-                        stack = StackProduceFormattedToken(stack, "_", HtmlFormatter.FormatHtmlEm);
+                        if (IsTokenInsideCode(tokens.ToList(), tokenIndex-1))
+                            stack.Push("_");
+                        else
+                            stack = StackProduceFormattedToken(tokens, stack, "_", HtmlFormatter.FormatHtmlEm);
                         break;
                     case "__":
-                        stack = StackProduceFormattedToken(stack, "__", HtmlFormatter.FormatHtmlStrong);
+                        if (IsTokenInsideCode(tokens.ToList(), tokenIndex - 1))
+                            stack.Push("__");
+                        else
+                            stack = StackProduceFormattedToken(tokens, stack, "__", HtmlFormatter.FormatHtmlStrong);
                         break;
                     case "`":
                         var list = ReverseStackToToken(ref stack, token);
@@ -64,17 +72,28 @@ namespace Markdown
             return string.Join("", stack.Reverse());
         }
 
-        private Stack<string> StackProduceFormattedToken(Stack<string> stack, string token, Func<string,string> format)
+        private bool IsTokenInsideCode(List<string> tokens, int tokenIndex)
+        {
+            int codesBeforeTokenCount = 0;
+            for (int i = 0; i < tokenIndex; i++)
+                if (tokens[i] == "`") codesBeforeTokenCount++;
+            int codeAfterToken=0;
+            for (int i = tokenIndex; i < tokens.Count; i++)
+                if (tokens[i] == "`")
+                {
+                    codeAfterToken = 1;
+                    break;
+                }
+            if (codesBeforeTokenCount%2==1 && codeAfterToken==1)
+                return true;
+            return false;
+        }
+
+        private Stack<string> StackProduceFormattedToken(IList<string> tokens, Stack<string> stack, string token, Func<string, string> format)
         {
             var stackCopy = new Stack<string>(stack.Reverse());
             var list = ReverseStackToToken(ref stack, token);
-            if (stack.Contains("`"))
-            {
-                stack = stackCopy;
-                stack.Push(token);
-            }
-            else
-                stack.Push(format(string.Join("", list)));
+            stack.Push(format(string.Join("", list)));
             return stack;
         }
 
@@ -109,9 +128,9 @@ namespace Markdown
             return text;
         }
 
-        public IEnumerable<string> GetTokens(string text)
+        public IList<string> GetTokens(string text)
         {
-            return Regex.Split(text, @"(__)|(_)|(\\)|(`)").Where(s => s != "");
+            return Regex.Split(text, @"(__)|(_)|(\\)|(`)").Where(s => s != "").ToList();
         }
 
         public string[] GetParagraphs(string text)
