@@ -8,7 +8,7 @@ namespace Markdown.Tests
     // CR (krait):     - проверить замену "<" -> "&lt;"  +
     // CR (krait):     - проверить, что внутри тега code другое форматирование не примен€етс€ +
     // CR (krait):     - проверить, что непарные _ и __ станов€тс€ обычным текстом +
-    // CR (krait):     - проверить, что _ и __ остаютс€ сами собой в тексте с цифрами
+    // CR (krait):     - проверить, что _ и __ остаютс€ сами собой в тексте с цифрами +
     // CR (krait): 3. Ќазвани€ тестов можно сделать более пон€тными. —тоит хот€ бы пофиксить грамматику: OneEnter_ShouldNot_NewParagraph -> OneEnter_ShouldNot_ProduceNewParagraph. +
     // CR (krait):    Ќе должно быть названий вида StrongInsideEm_Should. +
     [TestFixture]
@@ -69,6 +69,57 @@ namespace Markdown.Tests
             Assert.AreEqual("_A__", result);
         }
 
+        [Test]
+        public void NotPairedBacktick_ShouldNot_Code()
+        {
+            string data = "`A";
+            var processor = new MarkdownProcessor();
 
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual("`A", result);
+        }
+
+        [Test]
+        public void DigitsInsideGround_ShouldNot_ProduceEm()
+        {
+            string data = "_123_";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual("_123_", result);
+        }
+        [Test]
+        public void DigitsWithCharInsideGround_Should_ProduceEm()
+        {
+            string data = "_123ABC_";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual("<em>123ABC</em>", result);
+        }
+
+        [Test]
+        public void DigitsInsideDoubleGround_ShouldNot_ProduceStrong()
+        {
+            string data = "__123__";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual("__123__", result);
+        }
+        [Test]
+        public void DigitsWithCharInsideDoubleGround_Should_ProduceStrong()
+        {
+            string data = "__123ABC__";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual("<strong>123ABC</strong>", result);
+        }
     }
 }
