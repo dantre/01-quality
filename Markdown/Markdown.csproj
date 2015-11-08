@@ -50,6 +50,9 @@
     <Compile Include="HtmlFormatter.cs" />
     <Compile Include="MarkdownProcessor.cs" />
     <Compile Include="Tests\HtmlFormatter_Test.cs" />
+    <Compile Include="Tests\MarkdownProcessor_FixParagrapg_Em_Test.cs" />
+    <Compile Include="Tests\MarkdownProcessor_FixParagrapg_Strong_Test.cs" />
+    <Compile Include="Tests\MarkdownProcessor_FixParagraph_Code_Test.cs" />
     <Compile Include="Tests\MarkdownProcessor_FixParagraph_Test.cs" />
     <Compile Include="Tests\MarkdownProcessor_Test.cs" />
     <Compile Include="Program.cs" />
