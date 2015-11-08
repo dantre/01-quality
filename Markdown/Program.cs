@@ -8,6 +8,7 @@ namespace Markdown
     {
         static void Main(string[] args)
         {
+            // CR (krait): Для удобства имя файла стоит принимать через аргументы. + 
             if (File.Exists(args[0]))
             {
                 var allText = File.ReadAllText(args[0]);

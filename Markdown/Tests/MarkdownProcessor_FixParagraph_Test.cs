@@ -136,9 +136,19 @@ namespace Markdown.Tests
 
             Assert.AreEqual("A`B<em>C</em>", result);
         }
+        [Test]
+        public void NotClosedCodeTagWithStrong_Shoud_ProduceStrong()
+        {
+            var data = "A`B__C__";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual("A`B<strong>C</strong>", result);
+        }
 
         [Test]
-        public void NotClosedCodeTag_Em_Strong()
+        public void NotClosedCodeWithEmAndStrong_Should_ProduceEmAndStrong()
         {
             var data = "A`B_C_D__E__F";
             var processor = new MarkdownProcessor();
