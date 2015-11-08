@@ -1,5 +1,4 @@
 using NUnit.Framework;
-// ReSharper disable All
 
 namespace Markdown.Tests
 {
@@ -7,7 +6,7 @@ namespace Markdown.Tests
     class MarkdownProcessor_FixParagraph_Test
     {
         [Test]
-        public void Ground_Should_Em()
+        public void Ground_Should_ProduceEm()
         {
             var data = "_A_";
             var processor = new MarkdownProcessor();
@@ -18,7 +17,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void DoubleGround_Should_Strong()
+        public void DoubleGround_Should_ProduceStrong()
         {
             var data = "__A__";
             var processor = new MarkdownProcessor();
@@ -29,7 +28,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void Backtick_Should_Code()
+        public void Backtick_Should_ProduceCode()
         {
             var data = "`A`";
             var processor = new MarkdownProcessor();
@@ -40,7 +39,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void StrongInsideEm_Should()
+        public void DoubleGroundInsideGround_Should_ProduceStrongInsideEm()
         {
             var data = "_A__B__C_";
             var processor = new MarkdownProcessor();
@@ -51,14 +50,25 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void InsideCode_ShouldNot_EmStrong()
+        public void InsideCode_ShouldNot_Em()
         {
-            var data = "`A_B__C__D_F`";
+            var data = "`A_B_C`";
             var processor = new MarkdownProcessor();
 
             var result = processor.FixParagraph(data);
 
-            Assert.AreEqual(result, "<code>A_B__C__D_F</code>");
+            Assert.AreEqual(result, "<code>A_B_C</code>");
+        }
+
+        [Test]
+        public void InsideCode_ShouldNot_Strong()
+        {
+            var data = "`A__B__C`";
+            var processor = new MarkdownProcessor();
+
+            var result = processor.FixParagraph(data);
+
+            Assert.AreEqual(result, "<code>A__B__C</code>");
         }
 
         [Test]

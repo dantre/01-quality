@@ -90,7 +90,7 @@ namespace Markdown
             return Regex.IsMatch(token, "_|__|`");
         }
 
-        private List<string> ReverseStackToToken(ref Stack<string> stack, string token)
+        public List<string> ReverseStackToToken(ref Stack<string> stack, string token)
         {
             var tokens = new List<string> { token };
             while (stack.Peek() != token)
@@ -101,7 +101,7 @@ namespace Markdown
             return tokens;
         }
 
-        private string RemoveSlashes(string text)
+        public string RemoveSlashes(string text)
         {
             text = Regex.Replace(text, @"\\_", "_");
             text = Regex.Replace(text, @"\\__", "__");
