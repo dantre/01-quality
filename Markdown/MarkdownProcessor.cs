@@ -6,9 +6,6 @@ using System.Text.RegularExpressions;
 
 namespace Markdown
 {
-    // CR (krait): «десь есть некоторое количество багов, суд€ по тому, что даже на примере разметка получаетс€ неправильна€.
-    // CR (krait): Ќужно пофиксить баги и написать недостающие тесты, которые бы их вы€вили.
-
     public class MarkdownProcessor
     {
         private string RawText { get; }
@@ -77,20 +74,21 @@ namespace Markdown
             int codesBeforeTokenCount = 0;
             for (int i = 0; i < tokenIndex; i++)
                 if (tokens[i] == "`") codesBeforeTokenCount++;
-            int codeAfterToken=0;
+            int codeAfterToken = 0;
             for (int i = tokenIndex; i < tokens.Count; i++)
                 if (tokens[i] == "`")
                 {
                     codeAfterToken = 1;
                     break;
                 }
-            if (codesBeforeTokenCount%2==1 && codeAfterToken==1)
+            if (codesBeforeTokenCount % 2 == 1 && codeAfterToken == 1)
                 return true;
             return false;
         }
 
         private Stack<string> StackProduceFormattedToken(IList<string> tokens, Stack<string> stack, string token, Func<string, string> format)
         {
+            // CR (krait): Ќеиспользуема€ переменна€? Ќеиспользуемый параметр?
             var stackCopy = new Stack<string>(stack.Reverse());
             var list = ReverseStackToToken(ref stack, token);
             stack.Push(format(string.Join("", list)));
@@ -122,6 +120,7 @@ namespace Markdown
 
         public string RemoveSlashes(string text)
         {
+            // CR (krait): ѕочему не воспользоватьс€ обычным string.Replace, который работает быстрее?
             text = Regex.Replace(text, @"\\_", "_");
             text = Regex.Replace(text, @"\\__", "__");
             text = Regex.Replace(text, @"\\`", "`");

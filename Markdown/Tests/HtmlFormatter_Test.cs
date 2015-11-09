@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace Markdown.Tests
 {
+    // CR (krait): С названиями тестов беда. Надо сделать, чтобы было понятно.
+
     [TestFixture]
     class HtmlFormatter_Test
     {
@@ -14,7 +11,7 @@ namespace Markdown.Tests
         public void FormatEm_Should_String()
         {
             string text = "_A_";
-            string result = Markdown.HtmlFormatter.FormatHtmlEm(text);
+            string result = HtmlFormatter.FormatHtmlEm(text);
             Assert.AreEqual("<em>A</em>", result);
         }
 
@@ -22,14 +19,14 @@ namespace Markdown.Tests
         public void FormatEm_ShouldNot_Digits()
         {
             string text = "_123_";
-            string result = Markdown.HtmlFormatter.FormatHtmlEm(text);
+            string result = HtmlFormatter.FormatHtmlEm(text);
             Assert.AreEqual("_123_", result);
         }
         [Test]
         public void FormatStrong_Should_String()
         {
             string text = "__A__";
-            string result = Markdown.HtmlFormatter.FormatHtmlStrong(text);
+            string result = HtmlFormatter.FormatHtmlStrong(text);
             Assert.AreEqual("<strong>A</strong>", result);
         }
 
@@ -37,7 +34,7 @@ namespace Markdown.Tests
         public void FormatStrong_ShouldNot_Digits()
         {
             string text = "__123__";
-            string result = Markdown.HtmlFormatter.FormatHtmlStrong(text);
+            string result = HtmlFormatter.FormatHtmlStrong(text);
             Assert.AreEqual("__123__", result);
         }
 
@@ -45,7 +42,7 @@ namespace Markdown.Tests
         public void FormatCode_Should_String()
         {
             string text = "`A`";
-            string result = Markdown.HtmlFormatter.FormatHtmlCode(text);
+            string result = HtmlFormatter.FormatHtmlCode(text);
             Assert.AreEqual("<code>A</code>", result);
         }
 
@@ -53,7 +50,7 @@ namespace Markdown.Tests
         public void FormatGreateAndLesser_Should_MoreSign()
         {
             string text = "\\>";
-            string result = Markdown.HtmlFormatter.FormatGreaterAndLesserHtml(text);
+            string result = HtmlFormatter.FormatGreaterAndLesserHtml(text);
             Assert.AreEqual("&gt;", result);
         }
 
@@ -61,7 +58,7 @@ namespace Markdown.Tests
         public void FormatGreateAndLesser_Should_LessSign()
         {
             string text = "\\<";
-            string result = Markdown.HtmlFormatter.FormatGreaterAndLesserHtml(text);
+            string result = HtmlFormatter.FormatGreaterAndLesserHtml(text);
             Assert.AreEqual("&lt;", result);
         }
 
@@ -69,7 +66,7 @@ namespace Markdown.Tests
         public void CheckOnlyDigits_ShouldNot_StringAndDigits()
         {
             string text = "Token123asdToken";
-            bool result = Markdown.HtmlFormatter.IsOnlyDigitsBetweenTokens(text, "Token");
+            bool result = HtmlFormatter.IsOnlyDigitsBetweenTokens(text, "Token");
             Assert.AreEqual(false, result);
         }
 
@@ -77,7 +74,7 @@ namespace Markdown.Tests
         public void CheckOnlyDigits_Should_Digits()
         {
             string text = "Token123Token";
-            bool result = Markdown.HtmlFormatter.IsOnlyDigitsBetweenTokens(text, "Token");
+            bool result = HtmlFormatter.IsOnlyDigitsBetweenTokens(text, "Token");
             Assert.AreEqual(true, result);
         }
     }
