@@ -3,12 +3,13 @@
 namespace Markdown.Tests
 {
     // CR (krait): С названиями тестов беда. Надо сделать, чтобы было понятно.
+    // CR (krait): Переименовал несколько тестов, чтобы было понятно, к чему нужно стремиться.
 
     [TestFixture]
     class HtmlFormatter_Test
     {
         [Test]
-        public void FormatEm_Should_String()
+        public void FormatHtmlEm_should_replace_underscores_to_em_tags()
         {
             string text = "_A_";
             string result = HtmlFormatter.FormatHtmlEm(text);
@@ -16,14 +17,14 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void FormatEm_ShouldNot_Digits()
+        public void FormatHtmlEm_should_not_replace_underscores_around_text_containing_only_digits()
         {
             string text = "_123_";
             string result = HtmlFormatter.FormatHtmlEm(text);
             Assert.AreEqual("_123_", result);
         }
         [Test]
-        public void FormatStrong_Should_String()
+        public void FormatHtmlStrong_should_replace_double_underscores_to_strong_tags()
         {
             string text = "__A__";
             string result = HtmlFormatter.FormatHtmlStrong(text);
