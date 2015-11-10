@@ -7,31 +7,33 @@ using System.Threading.Tasks;
 
 namespace Markdown
 {
-    public static class Formatter 
+    public class Formatter 
     {
-        public static string FormatGround(string text, string tokenOpen, string tokenClose)
+        public string FormatGround(string text, string tokenOpen, string tokenClose)
         {
             if (IsOnlyDigitsBetweenTokens(text, "_"))
                 return text;
             return Regex.Replace(text, "_(.*)_", $"{tokenOpen}$1{tokenClose}");
         }
 
-        public static string FormatDoubleGround(string text, string tokenOpen, string tokenClose)
+        public string FormatDoubleGround(string text, string tokenOpen, string tokenClose)
         {
             if (IsOnlyDigitsBetweenTokens(text, "__"))
                 return text;
             return Regex.Replace(text, "__(.*)__", $"{tokenOpen}$1{tokenClose}");
         }
-        public static string FormatGreaterAndLesser(string text, string tokenOpen, string tokenClose)
+        public string FormatGreaterAndLesser(string text)
         {
-            return Regex.Replace(text, "`(.*)`", $"{tokenOpen}$1{tokenClose}");
+            text = text.Replace("\\<", "&lt;");
+            text = text.Replace("\\>", "&gt;");
+            return text;
         }
-        public static string FormatBacktick(string text, string tokenOpen, string tokenClose)
+        public string FormatBacktick(string text, string tokenOpen, string tokenClose)
         {
             return Regex.Replace(text, "`(.*)`", $"{tokenOpen}$1{tokenClose}");
         }
 
-        public static bool IsOnlyDigitsBetweenTokens(string text, string token)
+        public bool IsOnlyDigitsBetweenTokens(string text, string token)
         {
             string regexp = $"{token}(.*){token}";
             var data = Regex.Match(text, regexp);

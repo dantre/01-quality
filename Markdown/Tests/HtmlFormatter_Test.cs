@@ -9,7 +9,8 @@ namespace Markdown.Tests
         public void FormatHtmlEm_should_replace_underscores_to_em_tags()
         {
             string text = "_A_";
-            string result = HtmlFormatter.FormatHtmlEm(text);
+            var htmlFormatter = new HtmlFormatter();
+            string result = htmlFormatter.FormatUnderscore(text);
             Assert.AreEqual("<em>A</em>", result);
         }
 
@@ -17,7 +18,8 @@ namespace Markdown.Tests
         public void FormatHtmlEm_should_not_replace_underscores_around_text_containing_only_digits()
         {
             string text = "_123_";
-            string result = HtmlFormatter.FormatHtmlEm(text);
+            var htmlFormatter = new HtmlFormatter();
+            string result = htmlFormatter.FormatUnderscore(text);
             Assert.AreEqual("_123_", result);
         }
 
@@ -25,7 +27,8 @@ namespace Markdown.Tests
         public void FormatHtmlStrong_should_replace_double_underscores_to_strong_tags()
         {
             string text = "__A__";
-            string result = HtmlFormatter.FormatHtmlStrong(text);
+            var htmlFormatter = new HtmlFormatter();
+            string result = htmlFormatter.FormatDoubleUnderscore(text);
             Assert.AreEqual("<strong>A</strong>", result);
         }
 
@@ -33,7 +36,8 @@ namespace Markdown.Tests
         public void FormatStrong_should_not_replace_digits_between_double_underscore()
         {
             string text = "__123__";
-            string result = HtmlFormatter.FormatHtmlStrong(text);
+            var htmlFormatter = new HtmlFormatter();
+            string result = htmlFormatter.FormatDoubleUnderscore(text);
             Assert.AreEqual("__123__", result);
         }
 
@@ -41,7 +45,8 @@ namespace Markdown.Tests
         public void FormatCode_should_replace_backticks_around_text_to_code_tags()
         {
             string text = "`A`";
-            string result = HtmlFormatter.FormatHtmlCode(text);
+            var htmlFormatter = new HtmlFormatter();
+            string result = htmlFormatter.FormatBacktick(text);
             Assert.AreEqual("<code>A</code>", result);
         }
 
@@ -49,7 +54,8 @@ namespace Markdown.Tests
         public void FormatGreateAndLesser_should_replace_more_sign_to_amp_gt()
         {
             string text = "\\>";
-            string result = HtmlFormatter.FormatGreaterAndLesserHtml(text);
+            var htmlFormatter = new HtmlFormatter();
+            string result = htmlFormatter.FormatMoreLess(text);
             Assert.AreEqual("&gt;", result);
         }
 
@@ -57,7 +63,8 @@ namespace Markdown.Tests
         public void FormatGreateAndLesser_should_replace_less_sign_to_amp_lt()
         {
             string text = "\\<";
-            string result = HtmlFormatter.FormatGreaterAndLesserHtml(text);
+            var htmlFormatter = new HtmlFormatter();
+            string result = htmlFormatter.FormatMoreLess(text);
             Assert.AreEqual("&lt;", result);
         }
     }

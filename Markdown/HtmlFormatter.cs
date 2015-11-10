@@ -1,33 +1,35 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace Markdown
 {
-    public static class HtmlFormatter 
+    public class HtmlFormatter : IFormatter
     {
-        // CR (krait): Стоит ли так привязывать теги к токенам маркдауна? Что, если окажется, что текст между _ нужно форматировать по-другому?
-        // CR (krait): Или понадобится рендерить не только в html?
-        public static string FormatHtmlEm(string text)
+        private Formatter Formatter { get; set; }
+        public HtmlFormatter()
+        {
+            Formatter = new Formatter();
+        }
+        public string FormatUnderscore(string text)
         {
             return Formatter.FormatGround(text, "<em>", "</em>");
         }
 
-        public static string FormatHtmlStrong(string text)
+        public string FormatDoubleUnderscore(string text)
         {
             return Formatter.FormatDoubleGround(text, "<strong>", "</strong>");
         }
 
-        public static string FormatHtmlCode(string text)
+        public string FormatBacktick(string text)
         {
             return Formatter.FormatBacktick(text, "<code>", "</code>");
         }
 
-        public static string FormatGreaterAndLesserHtml(string text)
+        public string FormatMoreLess(string text)
         {
-            text = text.Replace("\\<", "&lt;");
-            text = text.Replace("\\>", "&gt;");
-            return text;
+            return Formatter.FormatGreaterAndLesser(text);
         }
     }
 }
