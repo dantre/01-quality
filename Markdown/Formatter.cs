@@ -37,8 +37,9 @@ namespace Markdown
         {
             string regexp = $"{token}(.*){token}";
             var data = Regex.Match(text, regexp);
-            // CR (krait): 2. А почему не может быть так, что матча не будет?
-            return data.Groups[1].Value.All(Char.IsDigit);
+            if (data.Groups.Count==2)
+                return data.Groups[1].Value.All(Char.IsDigit);
+            return false;
         }
     }
 }
