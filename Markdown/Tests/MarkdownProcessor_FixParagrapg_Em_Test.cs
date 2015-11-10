@@ -3,7 +3,7 @@ using NUnit.Framework;
 namespace Markdown.Tests
 {
     [TestFixture]
-    public class MarkdownProcessor_FixParagrapg_Em_Test
+    public class MarkdownProcessor_FixParagrapg_m_Test
     {
         [Test]
         public void FixParagraph_on_text_inside_underscores_should_give_text_inside()

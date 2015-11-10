@@ -6,7 +6,7 @@ namespace Markdown.Tests
     public class MarkdownProcessor_FixParagraph_Code_Test
     {
         [Test]
-        public void Backtick_Should_ProduceCode()
+        public void FixParagraph_on_text_inside_backticks_should_give_text_inside_code_tags()
         {
             var data = "`A`";
             var processor = new MarkdownProcessor();
@@ -17,7 +17,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void Can_ScreeningBacktickGround()
+        public void FixParagraph_on_text_inside_screened_backticks_should_give_text_inside_backticks()
         {
             var data = "\\`A\\`";
             var processor = new MarkdownProcessor();
@@ -28,7 +28,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void NotClosedCodeWithEmAndStrong_Should_ProduceEmAndStrong()
+        public void FixParagraph_on_text_with_unpaired_backticks_and_paired_underscores_and_double_underscores_should_give_text_with_em_and_strong_tags()
         {
             var data = "A`B_C_D__E__F";
             var processor = new MarkdownProcessor();
