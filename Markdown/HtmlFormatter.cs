@@ -1,10 +1,6 @@
-﻿using System;
-using System.ComponentModel;
-using System.Linq;
-using System.Text.RegularExpressions;
-
-namespace Markdown
+﻿namespace Markdown
 {
+    // CR (krait): Зачем такие извращения? Это же твой код, почему просто не переделать Formatter в HtmlFormatter?
     public class HtmlFormatter : IFormatter
     {
         private Formatter Formatter { get; set; }

@@ -8,11 +8,13 @@ namespace Markdown
 {
     public class MarkdownProcessor
     {
+        // CR (krait): Приватные проперти? Зачем? Почему бы не обойтись полями?
         private string RawText { get; set; }
         private IFormatter Formatter { get; set; }
 
         public MarkdownProcessor()
         {
+            // CR (krait): Если задумка была не привязываться к конкретной реализации IFormatter, никаких упоминаний его реализаций тут быть не должно.
             Formatter = new HtmlFormatter();
         }
 
@@ -22,6 +24,7 @@ namespace Markdown
             Formatter = formatter;
         }
 
+        // CR (krait): И таких упоминаний html тоже не должно быть.
         public string GetHtml()
         {
             var paragraphs = GetParagraphs(RawText);

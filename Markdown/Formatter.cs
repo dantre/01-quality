@@ -9,6 +9,7 @@ namespace Markdown
 {
     public class Formatter 
     {
+        // CR (krait): Кажется, тут есть 3 почти одинаковых метода (Format*). Стоит это как-то использовать.
         public string FormatGround(string text, string tokenOpen, string tokenClose)
         {
             if (IsOnlyDigitsBetweenTokens(text, "_"))
@@ -37,7 +38,7 @@ namespace Markdown
         {
             string regexp = $"{token}(.*){token}";
             var data = Regex.Match(text, regexp);
-            if (data.Groups.Count==2)
+            if (data.Groups.Count == 2)
                 return data.Groups[1].Value.All(Char.IsDigit);
             return false;
         }
