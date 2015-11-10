@@ -54,8 +54,10 @@
     <Compile Include="Cell.cs" />
     <Compile Include="Chess.cs" />
     <Compile Include="Chess_Test.cs" />
+    <Compile Include="Move.cs" />
     <Compile Include="Piece.cs" />
     <Compile Include="Location.cs" />
+    <Compile Include="PieceColor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

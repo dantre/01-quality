@@ -56,6 +56,7 @@
     <Compile Include="Antipatterns\Stack_tests1.cs" />
     <Compile Include="Antipatterns\Stack_tests3.cs" />
     <Compile Include="Antipatterns\Stack_tests4.cs" />
+    <Compile Include="Exercise\ICommand.cs" />
     <Compile Include="Exercise\TextDocument.cs" />
     <Compile Include="Exercise\TextDocumentTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -65,7 +66,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Specifications\DoubleParse_simple_should.cs" />
-    <Compile Include="Specifications\DoubleParse_dataDriven_should.cs" />
+    <Compile Include="Specifications\DoubleParse_should.cs" />
     <Compile Include="Specifications\Stack_Specification.cs" />
   </ItemGroup>
   <ItemGroup>
