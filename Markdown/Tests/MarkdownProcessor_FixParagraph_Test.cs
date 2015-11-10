@@ -2,20 +2,11 @@ using NUnit.Framework;
 
 namespace Markdown.Tests
 {
-    // CR (krait): 1. Разные TestFixture должны быть в разных файлах. +
-    // CR (krait): 2. Не хватает многих тестов. Несколько идей:
-    // CR (krait):     - проверить, что пустые параграфы пропускаются +
-    // CR (krait):     - проверить замену "<" -> "&lt;"  +
-    // CR (krait):     - проверить, что внутри тега code другое форматирование не применяется +
-    // CR (krait):     - проверить, что непарные _ и __ становятся обычным текстом +
-    // CR (krait):     - проверить, что _ и __ остаются сами собой в тексте с цифрами +
-    // CR (krait): 3. Названия тестов можно сделать более понятными. Стоит хотя бы пофиксить грамматику: OneEnter_ShouldNot_NewParagraph -> OneEnter_ShouldNot_ProduceNewParagraph. +
-    // CR (krait):    Не должно быть названий вида StrongInsideEm_Should. +
     [TestFixture]
     class MarkdownProcessor_FixParagraph_Test
     {
         [Test]
-        public void MoreSign_Should_Greater()
+        public void FixParagraph_on_text_with_more_sign_should_give_text_with_amp_gt()
         {
             string data = @"A\>B";
             var processor = new MarkdownProcessor();
@@ -26,7 +17,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void LessSign_Should_Lesser()
+        public void FixParagraph_on_text_with_less_sing_should_give_text_with_amp_lt()
         {
             string data = @"A\<B";
             var processor = new MarkdownProcessor();
@@ -37,7 +28,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void NotPairedGround_ShouldNot_Em()
+        public void FixParagraph_on_text_with_one_underscore_should_not_give_em_tag()
         {
             string data = "_ABC";
             var processor = new MarkdownProcessor();
@@ -48,7 +39,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void NotPairedDoubleGround_ShouldNot_Strong()
+        public void FixParagraph_on_text_with_one_double_underscore_should_not_give_strong_tag()
         {
             string data = "__A";
             var processor = new MarkdownProcessor();
@@ -59,7 +50,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void GroundAndDoubleGroundOnDifferentSide_ShouldNot_ProduceTags()
+        public void FixParagraph_on_text_with_underscore_and_double_underscore_on_different_sides_should_give_the_same_text()
         {
             string data = "_A__";
             var processor = new MarkdownProcessor();
@@ -70,7 +61,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void NotPairedBacktick_ShouldNot_Code()
+        public void FixParagraph_on_text_with_one_backtick_should_give_the_same_text()
         {
             string data = "`A";
             var processor = new MarkdownProcessor();
@@ -81,7 +72,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void DigitsInsideGround_ShouldNot_ProduceEm()
+        public void FixParagraph_on_digits_inside_underscores_should_give_the_same_text()
         {
             string data = "_123_";
             var processor = new MarkdownProcessor();
@@ -90,8 +81,9 @@ namespace Markdown.Tests
 
             Assert.AreEqual("_123_", result);
         }
+
         [Test]
-        public void DigitsWithCharInsideGround_Should_ProduceEm()
+        public void FixParagraph_on_digits_with_letters_inside_underscores_should_give_text_inside_em_tags()
         {
             string data = "_123ABC_";
             var processor = new MarkdownProcessor();
@@ -102,7 +94,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void DigitsInsideDoubleGround_ShouldNot_ProduceStrong()
+        public void FixParagraph_on_digits_inside_double_underscores_should_give_the_same_text()
         {
             string data = "__123__";
             var processor = new MarkdownProcessor();
@@ -112,7 +104,7 @@ namespace Markdown.Tests
             Assert.AreEqual("__123__", result);
         }
         [Test]
-        public void DigitsWithCharInsideDoubleGround_Should_ProduceStrong()
+        public void FixParagraph_on_digits_with_letters_inside_double_underscores_should_give_text_inside_strong_tags()
         {
             string data = "__123ABC__";
             var processor = new MarkdownProcessor();

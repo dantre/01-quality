@@ -6,7 +6,7 @@ namespace Markdown.Tests
     public class Formatter_Test
     { 
         [Test]
-        public void CheckOnlyDigits_ShouldNot_StringAndDigits()
+        public void IsOnlyDigitsBetweenTokens_on_digits_with_letters_should_give_false()
         {
             string text = "Token123asdToken";
             bool result = Formatter.IsOnlyDigitsBetweenTokens(text, "Token");
@@ -14,19 +14,11 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void CheckOnlyDigits_Should_Digits()
+        public void IsOnlyDigitsBetweenTokens_on_digits_should_give_true()
         {
             string text = "Token123Token";
             bool result = Formatter.IsOnlyDigitsBetweenTokens(text, "Token");
             Assert.AreEqual(true, result);
         }
-//        
-//        [Test]
-//        public void IsOnlyDigitsBetweenTokens_should()
-//        {
-//            string text = "Token";
-//            bool result = Formatter.IsOnlyDigitsBetweenTokens(text, "Token");
-//            Assert.AreEqual(false, result);
-//        }
     }
 }
