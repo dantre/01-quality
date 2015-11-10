@@ -10,7 +10,7 @@ namespace Markdown.Tests
         public void GetParagraphs_on_text_with_2_enters_and_spaces_should_give_2_paragraphs()
         {
             string data = "A\r\n    \r\nB";
-            var processor = new MarkdownProcessor();
+            var processor = new MarkdownProcessor(new HtmlFormatter());
 
             var result = processor.GetParagraphs(data);
 
@@ -21,7 +21,7 @@ namespace Markdown.Tests
         public void GetParagraps_on_text_with_2_enters_and_spaces_should_give_right_text()
         {
             string data = "A\r\n    \r\nB";
-            var processor = new MarkdownProcessor();
+            var processor = new MarkdownProcessor(new HtmlFormatter());
 
             var result = processor.GetParagraphs(data);
 
@@ -33,7 +33,7 @@ namespace Markdown.Tests
         public void GetParagraphs_on_text_with_one_enter_should_give_one_paragraph()
         {
             string data = "A\r\n B";
-            var processor = new MarkdownProcessor();
+            var processor = new MarkdownProcessor(new HtmlFormatter());
 
             var result = processor.GetParagraphs(data);
 
@@ -44,7 +44,7 @@ namespace Markdown.Tests
         public void GetParagraphs_on_string_with_4_enters_and_text_should_give_2_paragraphs()
         {
             string data = "Paragraph1\r\n \r\n \r\n \r\nParagraph2";
-            var processor = new MarkdownProcessor();
+            var processor = new MarkdownProcessor(new HtmlFormatter());
             var expectedResult = new List<string>() { "Paragraph1", "Paragraph2" };
 
             var result = processor.GetParagraphs(data);
@@ -56,7 +56,7 @@ namespace Markdown.Tests
         {
             string data = "a_b__c\\d`e";
             var expectedResult = new[] {"a", "_", "b", "__", "c", "\\", "d", "`", "e"};
-            var processor = new MarkdownProcessor();
+            var processor = new MarkdownProcessor(new HtmlFormatter());
 
             var result = processor.GetTokens(data);
 
@@ -66,7 +66,7 @@ namespace Markdown.Tests
         [Test]
         public void RemoveSlashes_on_text_with_slashes_and_tokens_should_remove_slashes_before_tokens()
         {
-            var processor = new MarkdownProcessor();
+            var processor = new MarkdownProcessor(new HtmlFormatter());
             string data = @"\A\_\b\\\`\C";
 
             var result = processor.RemoveSlashes(data);
@@ -81,7 +81,7 @@ namespace Markdown.Tests
             stack.Push("text");
             var expectedTokens = new List<string>() {"__","text","__"};
 
-            var processor = new MarkdownProcessor();
+            var processor = new MarkdownProcessor(new HtmlFormatter());
             var result = processor.ReverseStackToToken(ref stack, "__");
 
             CollectionAssert.AreEqual(expectedTokens, result);
@@ -96,7 +96,7 @@ namespace Markdown.Tests
             stack.Push("text2");
             var expectedTokens = new List<string>() { "__", "text1", "text2", "__" };
 
-            var processor = new MarkdownProcessor();
+            var processor = new MarkdownProcessor(new HtmlFormatter());
             var result = processor.ReverseStackToToken(ref stack, "__");
 
             CollectionAssert.AreEqual(expectedTokens, result);

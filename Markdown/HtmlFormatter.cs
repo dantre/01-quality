@@ -1,31 +1,47 @@
-﻿namespace Markdown
+﻿using System;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+namespace Markdown
 {
-    // CR (krait): Зачем такие извращения? Это же твой код, почему просто не переделать Formatter в HtmlFormatter?
     public class HtmlFormatter : IFormatter
     {
-        private Formatter Formatter { get; set; }
-        public HtmlFormatter()
-        {
-            Formatter = new Formatter();
-        }
         public string FormatUnderscore(string text)
         {
-            return Formatter.FormatGround(text, "<em>", "</em>");
+            return Format(text, "_", "em", true);
         }
 
         public string FormatDoubleUnderscore(string text)
         {
-            return Formatter.FormatDoubleGround(text, "<strong>", "</strong>");
+            return Format(text, "__", "strong", true);
         }
 
         public string FormatBacktick(string text)
         {
-            return Formatter.FormatBacktick(text, "<code>", "</code>");
+            return Format(text, "`", "code", false);
         }
 
         public string FormatMoreLess(string text)
         {
-            return Formatter.FormatGreaterAndLesser(text);
+            text = text.Replace("\\<", "&lt;");
+            text = text.Replace("\\>", "&gt;");
+            return text;
+        }
+
+        public string Format(string text, string token, string tag, bool checkDigitsInsideTokens)
+        {
+            if (checkDigitsInsideTokens && IsOnlyDigitsBetweenTokens(text, token))
+                return text;
+            return Regex.Replace(text, $"{token}(.*){token}", $"<{tag}>$1</{tag}>");
+        }
+
+        public bool IsOnlyDigitsBetweenTokens(string text, string token)
+        {
+            string regexp = $"{token}(.*){token}";
+            var data = Regex.Match(text, regexp);
+            if (data.Groups.Count == 2)
+                return data.Groups[1].Value.All(Char.IsDigit);
+            return false;
         }
     }
 }

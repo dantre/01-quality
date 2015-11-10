@@ -67,5 +67,23 @@ namespace Markdown.Tests
             string result = htmlFormatter.FormatMoreLess(text);
             Assert.AreEqual("&lt;", result);
         }
+
+        [Test]
+        public void IsOnlyDigitsBetweenTokens_on_digits_with_letters_should_give_false()
+        {
+            string text = "Token123asdToken";
+            var htmlFormatter = new HtmlFormatter();
+            bool result = htmlFormatter.IsOnlyDigitsBetweenTokens(text, "Token");
+            Assert.AreEqual(false, result);
+        }
+
+        [Test]
+        public void IsOnlyDigitsBetweenTokens_on_digits_should_give_true()
+        {
+            string text = "Token123Token";
+            var htmlFormatter = new HtmlFormatter();
+            bool result = htmlFormatter.IsOnlyDigitsBetweenTokens(text, "Token");
+            Assert.AreEqual(true, result);
+        }
     }
 }

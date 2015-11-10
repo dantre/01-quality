@@ -8,26 +8,22 @@ namespace Markdown
 {
     public class MarkdownProcessor
     {
-        // CR (krait): Приватные проперти? Зачем? Почему бы не обойтись полями?
-        private string RawText { get; set; }
-        private IFormatter Formatter { get; set; }
+        private readonly string rawText;
+        private readonly IFormatter formatter;
 
-        public MarkdownProcessor()
+        public MarkdownProcessor(IFormatter formatter)
         {
-            // CR (krait): Если задумка была не привязываться к конкретной реализации IFormatter, никаких упоминаний его реализаций тут быть не должно.
-            Formatter = new HtmlFormatter();
+            this.formatter = formatter;
         }
 
         public MarkdownProcessor(string text, IFormatter formatter)
         {
-            RawText = text;
-            Formatter = formatter;
+            rawText = text;
+            this.formatter = formatter;
         }
-
-        // CR (krait): И таких упоминаний html тоже не должно быть.
-        public string GetHtml()
+        public string GetMarkdown()
         {
-            var paragraphs = GetParagraphs(RawText);
+            var paragraphs = GetParagraphs(rawText);
             var markdown = new StringBuilder();
             foreach (var p in paragraphs)
                 markdown.AppendLine($"<p>{FixParagraph(p)}</p>\r\n");
@@ -36,7 +32,7 @@ namespace Markdown
 
         public string FixParagraph(string paragraph)
         {
-            paragraph = Formatter.FormatMoreLess(paragraph);
+            paragraph = formatter.FormatMoreLess(paragraph);
             var tokens = GetTokens(paragraph);
             return RemoveSlashes(GetFormattedText(tokens));
         }
@@ -60,17 +56,17 @@ namespace Markdown
                         if (IsTokenInsideCode(tokens.ToList(), tokenIndex-1))
                             stack.Push("_");
                         else
-                            stack = StackProduceFormattedToken(stack, "_", Formatter.FormatUnderscore);
+                            stack = StackProduceFormattedToken(stack, "_", formatter.FormatUnderscore);
                         break;
                     case "__":
                         if (IsTokenInsideCode(tokens.ToList(), tokenIndex - 1))
                             stack.Push("__");
                         else
-                            stack = StackProduceFormattedToken(stack, "__", Formatter.FormatDoubleUnderscore);
+                            stack = StackProduceFormattedToken(stack, "__", formatter.FormatDoubleUnderscore);
                         break;
                     case "`":
                         var list = ReverseStackToToken(ref stack, token);
-                        stack.Push(Formatter.FormatBacktick(string.Join("", list)));
+                        stack.Push(formatter.FormatBacktick(string.Join("", list)));
                         break;
                 }
             }

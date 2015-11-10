@@ -18,7 +18,7 @@ namespace Markdown
                 var allText = File.ReadAllText(args[0]);
                 var htmlFormatter = new HtmlFormatter();
                 var processor = new MarkdownProcessor(allText, htmlFormatter);
-                var html = processor.GetHtml();
+                var html = processor.GetMarkdown();
                 File.WriteAllText("result.html", html, Encoding.UTF8);
             }
             else

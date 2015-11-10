@@ -47,11 +47,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Formatter.cs" />
     <Compile Include="HtmlFormatter.cs" />
     <Compile Include="IFormatter.cs" />
     <Compile Include="MarkdownProcessor.cs" />
-    <Compile Include="Tests\Formatter_Test.cs" />
     <Compile Include="Tests\HtmlFormatter_Test.cs" />
     <Compile Include="Tests\MarkdownProcessor_FixParagrapg_m_Test.cs" />
     <Compile Include="Tests\MarkdownProcessor_FixParagrapg_Strong_Test.cs" />
