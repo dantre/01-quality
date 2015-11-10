@@ -6,7 +6,7 @@ namespace Markdown.Tests
     public class MarkdownProcessor_FixParagrapg_Em_Test
     {
         [Test]
-        public void Ground_Should_ProduceEm()
+        public void FixParagraph_on_text_inside_underscores_should_give_text_inside()
         {
             var data = "_A_";
             var processor = new MarkdownProcessor();
@@ -17,7 +17,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void InsideCode_ShouldNot_Em()
+        public void FixParagraph_on_text_inside_underscores_inside_backtick_should_give_text_inside_underscores_and_code()
         {
             var data = "`A_B_C`";
             var processor = new MarkdownProcessor();
@@ -28,7 +28,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void Digits_ShouldNot_InsideEm()
+        public void FixParagraph_on_digits_inside_underscores_should_give_digits_inside_underscores()
         {
             var data = "_1_ _222_";
             var processor = new MarkdownProcessor();
@@ -39,7 +39,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void Can_ScreeningGround()
+        public void FixParagraph_on_text_inside_screened_underscores_give_text_inside_underscores()
         {
             var data = "\\_A\\_";
             var processor = new MarkdownProcessor();
@@ -50,7 +50,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void NotClosedCodeTagWithEm_Shoud_ProduceEm()
+        public void FixParagraph_on_unclosed_backtick_and_text_inside_underscore_should_give_text_inside_em_tag()
         {
             var data = "A`B_C_";
             var processor = new MarkdownProcessor();
@@ -61,7 +61,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void DoubleGroundInsideGround_Should_ProduceStrongInsideEm()
+        public void FixParagraph_on_text_with_paired_underscore_and_paired_double_underscores_should_give_text_with_em_and_strong_tags()
         {
             var data = "_A__B__C_";
             var processor = new MarkdownProcessor();

@@ -6,7 +6,7 @@ namespace Markdown.Tests
     public class MarkdownProcessor_FixParagrapg_Strong_Test
     {
         [Test]
-        public void DoubleGround_Should_ProduceStrong()
+        public void FixParagraph_on_text_around_double_unbderscore_should_give_text_inside_strong_tags()
         {
             var data = "__A__";
             var processor = new MarkdownProcessor();
@@ -17,7 +17,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void InsideCode_ShouldNot_Strong()
+        public void FixParagraph_on_text_around_double_unbderscore_with_inside_backticks_should_not_give_text_inside_code_tags_without_strong_tags()
         {
             var data = "`A__B__C`";
             var processor = new MarkdownProcessor();
@@ -28,7 +28,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void Digits_ShouldNot_InsideStrong()
+        public void FixParagraph_on_digits_inside_underscores_should_give_same_text()
         {
             var data = "__1__ __222__";
             var processor = new MarkdownProcessor();
@@ -39,7 +39,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void Can_ScreeningDoubleGround()
+        public void FixParagraph_on_text_with_screening_tokens_should_give_same_text()
         {
             var data = "\\_\\_A\\_\\_";
             var processor = new MarkdownProcessor();
@@ -50,7 +50,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void NotClosedCodeTagWithStrong_Should_ProduceStrong()
+        public void FixParagraph_on_text_with_not_closed_backtick_and_double_underscore_should_give()
         {
             var data = "A`B__C__";
             var processor = new MarkdownProcessor();
