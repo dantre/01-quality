@@ -2,11 +2,8 @@
 
 namespace Markdown.Tests
 {
-    // CR (krait): С названиями тестов беда. Надо сделать, чтобы было понятно.
-    // CR (krait): Переименовал несколько тестов, чтобы было понятно, к чему нужно стремиться.
-
     [TestFixture]
-    class HtmlFormatter_Test
+    internal class HtmlFormatter_Test
     {
         [Test]
         public void FormatHtmlEm_should_replace_underscores_to_em_tags()
@@ -23,6 +20,7 @@ namespace Markdown.Tests
             string result = HtmlFormatter.FormatHtmlEm(text);
             Assert.AreEqual("_123_", result);
         }
+
         [Test]
         public void FormatHtmlStrong_should_replace_double_underscores_to_strong_tags()
         {
@@ -32,7 +30,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void FormatStrong_ShouldNot_Digits()
+        public void FormatStrong_should_not_replace_digits_between_double_underscore()
         {
             string text = "__123__";
             string result = HtmlFormatter.FormatHtmlStrong(text);
@@ -40,7 +38,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void FormatCode_Should_String()
+        public void FormatCode_should_replace_backticks_around_text_to_code_tags()
         {
             string text = "`A`";
             string result = HtmlFormatter.FormatHtmlCode(text);
@@ -48,7 +46,7 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void FormatGreateAndLesser_Should_MoreSign()
+        public void FormatGreateAndLesser_should_replace_more_sign_to_amp_gt()
         {
             string text = "\\>";
             string result = HtmlFormatter.FormatGreaterAndLesserHtml(text);
@@ -56,27 +54,11 @@ namespace Markdown.Tests
         }
 
         [Test]
-        public void FormatGreateAndLesser_Should_LessSign()
+        public void FormatGreateAndLesser_should_replace_less_sign_to_amp_lt()
         {
             string text = "\\<";
             string result = HtmlFormatter.FormatGreaterAndLesserHtml(text);
             Assert.AreEqual("&lt;", result);
-        }
-
-        [Test]
-        public void CheckOnlyDigits_ShouldNot_StringAndDigits()
-        {
-            string text = "Token123asdToken";
-            bool result = HtmlFormatter.IsOnlyDigitsBetweenTokens(text, "Token");
-            Assert.AreEqual(false, result);
-        }
-
-        [Test]
-        public void CheckOnlyDigits_Should_Digits()
-        {
-            string text = "Token123Token";
-            bool result = HtmlFormatter.IsOnlyDigitsBetweenTokens(text, "Token");
-            Assert.AreEqual(true, result);
         }
     }
 }

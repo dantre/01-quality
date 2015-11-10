@@ -52,13 +52,13 @@ namespace Markdown
                         if (IsTokenInsideCode(tokens.ToList(), tokenIndex-1))
                             stack.Push("_");
                         else
-                            stack = StackProduceFormattedToken(tokens, stack, "_", HtmlFormatter.FormatHtmlEm);
+                            stack = StackProduceFormattedToken(stack, "_", HtmlFormatter.FormatHtmlEm);
                         break;
                     case "__":
                         if (IsTokenInsideCode(tokens.ToList(), tokenIndex - 1))
                             stack.Push("__");
                         else
-                            stack = StackProduceFormattedToken(tokens, stack, "__", HtmlFormatter.FormatHtmlStrong);
+                            stack = StackProduceFormattedToken(stack, "__", HtmlFormatter.FormatHtmlStrong);
                         break;
                     case "`":
                         var list = ReverseStackToToken(ref stack, token);
@@ -86,10 +86,8 @@ namespace Markdown
             return false;
         }
 
-        private Stack<string> StackProduceFormattedToken(IList<string> tokens, Stack<string> stack, string token, Func<string, string> format)
+        private Stack<string> StackProduceFormattedToken(Stack<string> stack, string token, Func<string, string> format)
         {
-            // CR (krait): Неиспользуемая переменная? Неиспользуемый параметр?
-            var stackCopy = new Stack<string>(stack.Reverse());
             var list = ReverseStackToToken(ref stack, token);
             stack.Push(format(string.Join("", list)));
             return stack;
@@ -120,10 +118,9 @@ namespace Markdown
 
         public string RemoveSlashes(string text)
         {
-            // CR (krait): Почему не воспользоваться обычным string.Replace, который работает быстрее?
-            text = Regex.Replace(text, @"\\_", "_");
-            text = Regex.Replace(text, @"\\__", "__");
-            text = Regex.Replace(text, @"\\`", "`");
+            text = text.Replace("\\_", "_");
+            text = text.Replace("\\__", "__");
+            text = text.Replace("\\`", "`");
             return text;
         }
 

@@ -8,6 +8,11 @@ namespace Markdown
     {
         static void Main(string[] args)
         {
+            if (args.Length != 1)
+            {
+                Console.WriteLine("Usage: Markdown.exe [filename]");
+                return;
+            }
             if (File.Exists(args[0]))
             {
                 var allText = File.ReadAllText(args[0]);
@@ -16,8 +21,6 @@ namespace Markdown
                 File.WriteAllText("result.html", html, Encoding.UTF8);
             }
             else
-            // CR (krait): Если чувак не знает, как пользоваться твоей штукой, ему от такого сообщения легче не станет.
-            // CR (krait): Стоит написать, какой аргумент ожидается.
                 Console.WriteLine("File not found.");
         }
     }
