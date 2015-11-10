@@ -8,27 +8,32 @@ namespace Markdown
 {
     public class MarkdownProcessor
     {
-        private string RawText { get; }
+        private string RawText { get; set; }
+        private IFormatter Formatter { get; set; }
 
-        public MarkdownProcessor() {}
+        public MarkdownProcessor()
+        {
+            Formatter = new HtmlFormatter();
+        }
 
-        public MarkdownProcessor(string text)
+        public MarkdownProcessor(string text, IFormatter formatter)
         {
             RawText = text;
+            Formatter = formatter;
         }
 
         public string GetHtml()
         {
             var paragraphs = GetParagraphs(RawText);
-            var html = new StringBuilder();
+            var markdown = new StringBuilder();
             foreach (var p in paragraphs)
-                html.AppendLine($"<p>{FixParagraph(p)}</p>\r\n");
-            return html.ToString();
+                markdown.AppendLine($"<p>{FixParagraph(p)}</p>\r\n");
+            return markdown.ToString();
         }
 
         public string FixParagraph(string paragraph)
         {
-            paragraph = HtmlFormatter.FormatGreaterAndLesserHtml(paragraph);
+            paragraph = Formatter.FormatMoreLess(paragraph);
             var tokens = GetTokens(paragraph);
             return RemoveSlashes(GetFormattedText(tokens));
         }
@@ -52,17 +57,17 @@ namespace Markdown
                         if (IsTokenInsideCode(tokens.ToList(), tokenIndex-1))
                             stack.Push("_");
                         else
-                            stack = StackProduceFormattedToken(stack, "_", HtmlFormatter.FormatHtmlEm);
+                            stack = StackProduceFormattedToken(stack, "_", Formatter.FormatUnderscore);
                         break;
                     case "__":
                         if (IsTokenInsideCode(tokens.ToList(), tokenIndex - 1))
                             stack.Push("__");
                         else
-                            stack = StackProduceFormattedToken(stack, "__", HtmlFormatter.FormatHtmlStrong);
+                            stack = StackProduceFormattedToken(stack, "__", Formatter.FormatDoubleUnderscore);
                         break;
                     case "`":
                         var list = ReverseStackToToken(ref stack, token);
-                        stack.Push(HtmlFormatter.FormatHtmlCode(string.Join("", list)));
+                        stack.Push(Formatter.FormatBacktick(string.Join("", list)));
                         break;
                 }
             }
