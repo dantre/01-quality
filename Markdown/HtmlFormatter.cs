@@ -28,7 +28,12 @@ namespace Markdown
             return text;
         }
 
-        public string Format(string text, string token, string tag, bool checkDigitsInsideTokens)
+        public string FormatParagraph(string text)
+        {
+            return $"<p>{text}</p>\r\n";
+        }
+
+        private string Format(string text, string token, string tag, bool checkDigitsInsideTokens)
         {
             if (checkDigitsInsideTokens && IsOnlyDigitsBetweenTokens(text, token))
                 return text;

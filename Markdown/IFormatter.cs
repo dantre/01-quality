@@ -6,5 +6,6 @@ namespace Markdown
         string FormatDoubleUnderscore(string text);
         string FormatBacktick(string text);
         string FormatMoreLess(string text);
+        string FormatParagraph(string text);
     }
 }

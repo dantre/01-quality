@@ -26,7 +26,7 @@ namespace Markdown
             var paragraphs = GetParagraphs(rawText);
             var markdown = new StringBuilder();
             foreach (var p in paragraphs)
-                markdown.AppendLine($"<p>{FixParagraph(p)}</p>\r\n");
+                markdown.AppendLine(formatter.FormatParagraph(FixParagraph(p)));
             return markdown.ToString();
         }
 

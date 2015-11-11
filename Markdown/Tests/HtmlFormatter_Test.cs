@@ -85,5 +85,14 @@ namespace Markdown.Tests
             bool result = htmlFormatter.IsOnlyDigitsBetweenTokens(text, "Token");
             Assert.AreEqual(true, result);
         }
+
+        [Test]
+        public void FormatParagaraph_on_text_should_give_text_inside_p_tags_with_enter_on_the_end()
+        {
+            string text = "text";
+            var htmlFormatter = new HtmlFormatter();
+            string result = htmlFormatter.FormatParagraph(text);
+            Assert.AreEqual("<p>text</p>\r\n", result);
+        }
     }
 }
